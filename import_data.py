@@ -406,31 +406,36 @@ def create_tables_sqlite(cursor):
         )
     """)
     
-    # Create Driver_Elo table
+    # Create Driver_Elo table - Summary ratings per driver
     cursor.execute("""
         CREATE TABLE Driver_Elo (
-            elo_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            driver_id INTEGER NOT NULL,
-            race_id INTEGER NOT NULL,
-            elo_rating REAL NOT NULL DEFAULT 1500.00,
-            updated_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (driver_id) REFERENCES Driver(driver_id),
-            FOREIGN KEY (race_id) REFERENCES Race(race_id),
-            UNIQUE(driver_id, race_id)
+            driver_id INTEGER PRIMARY KEY,
+            qualifying_elo REAL NOT NULL DEFAULT 1500.00,
+            race_elo REAL NOT NULL DEFAULT 1500.00,
+            global_elo REAL NOT NULL DEFAULT 1500.00,
+            era_adjusted_elo REAL,
+            qualifying_races INTEGER DEFAULT 0,
+            race_races INTEGER DEFAULT 0,
+            total_matchups INTEGER DEFAULT 0,
+            reliability_score REAL,
+            debut_year INTEGER,
+            FOREIGN KEY (driver_id) REFERENCES Driver(driver_id)
         )
     """)
     
-    # Create Team_Elo table
+    # Create Team_Elo table - Summary ratings per team (for future use)
     cursor.execute("""
         CREATE TABLE Team_Elo (
-            elo_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            team_id INTEGER NOT NULL,
-            race_id INTEGER NOT NULL,
-            elo_rating REAL NOT NULL DEFAULT 1500.00,
-            updated_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (team_id) REFERENCES Team(team_id),
-            FOREIGN KEY (race_id) REFERENCES Race(race_id),
-            UNIQUE(team_id, race_id)
+            team_id INTEGER PRIMARY KEY,
+            qualifying_elo REAL NOT NULL DEFAULT 1500.00,
+            race_elo REAL NOT NULL DEFAULT 1500.00,
+            global_elo REAL NOT NULL DEFAULT 1500.00,
+            era_adjusted_elo REAL,
+            total_races INTEGER DEFAULT 0,
+            reliability_score REAL,
+            first_race_year INTEGER,
+            last_race_year INTEGER,
+            FOREIGN KEY (team_id) REFERENCES Team(team_id)
         )
     """)
     
