@@ -1,9 +1,3 @@
--- =============================================
--- F1 Database Schema Creation Script
--- Based on ERD Specification
--- =============================================
-
--- Drop tables if they exist (in reverse order of dependencies)
 DROP TABLE IF EXISTS Driver_Elo;
 DROP TABLE IF EXISTS Team_Elo;
 DROP TABLE IF EXISTS Result;
@@ -13,17 +7,11 @@ DROP TABLE IF EXISTS Driver;
 DROP TABLE IF EXISTS Team;
 DROP TABLE IF EXISTS Status;
 
--- =============================================
--- Create Status Table (for Result status lookup)
--- =============================================
 CREATE TABLE Status (
     status_id INT PRIMARY KEY,
     status_description VARCHAR(100) NOT NULL
 );
 
--- =============================================
--- Create Team Table
--- =============================================
 CREATE TABLE Team (
     team_id INT PRIMARY KEY,
     team_name VARCHAR(100) NOT NULL,
@@ -34,9 +22,6 @@ CREATE TABLE Team (
     CONSTRAINT uk_team_name UNIQUE (team_name)
 );
 
--- =============================================
--- Create Driver Table
--- =============================================
 CREATE TABLE Driver (
     driver_id INT PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
@@ -50,9 +35,6 @@ CREATE TABLE Driver (
     CONSTRAINT uk_driver_name UNIQUE (first_name, last_name, birth_date)
 );
 
--- =============================================
--- Create Circuit Table
--- =============================================
 CREATE TABLE Circuit (
     circuit_id INT PRIMARY KEY,
     circuit_name VARCHAR(100) NOT NULL,
@@ -63,9 +45,6 @@ CREATE TABLE Circuit (
     CONSTRAINT uk_circuit_name UNIQUE (circuit_name)
 );
 
--- =============================================
--- Create Race Table
--- =============================================
 CREATE TABLE Race (
     race_id INT PRIMARY KEY,
     season_year INT NOT NULL,
@@ -78,9 +57,6 @@ CREATE TABLE Race (
     CONSTRAINT uk_race_season_round UNIQUE (season_year, round_number)
 );
 
--- =============================================
--- Create Result Table (Primary race results)
--- =============================================
 CREATE TABLE Result (
     result_id INT PRIMARY KEY,
     race_id INT NOT NULL,
@@ -101,10 +77,6 @@ CREATE TABLE Result (
     CONSTRAINT uk_result_race_driver UNIQUE (race_id, driver_id)
 );
 
--- =============================================
--- Create Additional_Results Table
--- For duplicate entries, re-entries, and alternative recordings
--- =============================================
 CREATE TABLE Additional_Results (
     additional_result_id INT PRIMARY KEY AUTO_INCREMENT,
     original_result_id INT NOT NULL,
@@ -129,9 +101,6 @@ CREATE TABLE Additional_Results (
         REFERENCES Result(result_id) ON DELETE CASCADE
 );
 
--- =============================================
--- Create Driver_Elo Table
--- =============================================
 CREATE TABLE Driver_Elo (
     elo_id INT PRIMARY KEY AUTO_INCREMENT,
     driver_id INT NOT NULL,
@@ -145,9 +114,6 @@ CREATE TABLE Driver_Elo (
     CONSTRAINT uk_driver_elo_race UNIQUE (driver_id, race_id)
 );
 
--- =============================================
--- Create Team_Elo Table
--- =============================================
 CREATE TABLE Team_Elo (
     elo_id INT PRIMARY KEY AUTO_INCREMENT,
     team_id INT NOT NULL,
@@ -161,9 +127,6 @@ CREATE TABLE Team_Elo (
     CONSTRAINT uk_team_elo_race UNIQUE (team_id, race_id)
 );
 
--- =============================================
--- Create Indexes for Performance
--- =============================================
 CREATE INDEX idx_driver_nationality ON Driver(nationality);
 CREATE INDEX idx_driver_current_team ON Driver(current_team_id);
 CREATE INDEX idx_race_season ON Race(season_year);
@@ -182,6 +145,3 @@ CREATE INDEX idx_driver_elo_race ON Driver_Elo(race_id);
 CREATE INDEX idx_team_elo_team ON Team_Elo(team_id);
 CREATE INDEX idx_team_elo_race ON Team_Elo(race_id);
 
--- =============================================
--- End of Schema Creation
--- =============================================

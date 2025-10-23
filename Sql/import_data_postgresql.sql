@@ -1,22 +1,10 @@
--- =============================================
--- F1 Database Data Import Script (PostgreSQL)
--- Import data from CSV files into the database
--- =============================================
 
--- NOTE: Update the file paths to match your actual CSV file locations
-
--- =============================================
--- 1. Import Status Data
--- =============================================
 COPY Status(status_id, status_description)
 FROM 'd:/f1-elo/archive/status.csv'
 DELIMITER ','
 CSV HEADER
 QUOTE '"';
 
--- =============================================
--- 2. Import Team Data (from constructors.csv)
--- =============================================
 CREATE TEMP TABLE temp_constructors (
     constructorId INT,
     constructorRef VARCHAR(100),
@@ -37,9 +25,6 @@ FROM temp_constructors;
 
 DROP TABLE temp_constructors;
 
--- =============================================
--- 3. Import Driver Data
--- =============================================
 CREATE TEMP TABLE temp_drivers (
     driverId INT,
     driverRef VARCHAR(100),
@@ -72,9 +57,6 @@ FROM temp_drivers;
 
 DROP TABLE temp_drivers;
 
--- =============================================
--- 4. Import Circuit Data
--- =============================================
 CREATE TEMP TABLE temp_circuits (
     circuitId INT,
     circuitRef VARCHAR(100),
@@ -100,9 +82,6 @@ FROM temp_circuits;
 
 DROP TABLE temp_circuits;
 
--- =============================================
--- 5. Import Race Data
--- =============================================
 CREATE TEMP TABLE temp_races (
     raceId INT,
     year INT,
@@ -137,9 +116,6 @@ FROM temp_races;
 
 DROP TABLE temp_races;
 
--- =============================================
--- 6. Import Result Data
--- =============================================
 CREATE TEMP TABLE temp_results (
     resultId INT,
     raceId INT,
@@ -184,9 +160,6 @@ LEFT JOIN Status s ON tr.statusId = s.status_id;
 
 DROP TABLE temp_results;
 
--- =============================================
--- Update Team Statistics
--- =============================================
 UPDATE Team t
 SET total_points = COALESCE((
     SELECT SUM(r.points)
@@ -199,9 +172,6 @@ total_wins = COALESCE((
     WHERE r.team_id = t.team_id AND r.position = 1
 ), 0);
 
--- =============================================
--- Update Driver Debut Year
--- =============================================
 UPDATE Driver d
 SET debut_year = (
     SELECT MIN(ra.season_year)
@@ -210,9 +180,6 @@ SET debut_year = (
     WHERE r.driver_id = d.driver_id
 );
 
--- =============================================
--- Update Driver Current Team (most recent race)
--- =============================================
 UPDATE Driver d
 SET current_team_id = (
     SELECT r.team_id
@@ -223,9 +190,6 @@ SET current_team_id = (
     LIMIT 1
 );
 
--- =============================================
--- Verify Data Import
--- =============================================
 SELECT 'Status' AS table_name, COUNT(*) AS record_count FROM Status
 UNION ALL
 SELECT 'Team', COUNT(*) FROM Team
@@ -237,7 +201,3 @@ UNION ALL
 SELECT 'Race', COUNT(*) FROM Race
 UNION ALL
 SELECT 'Result', COUNT(*) FROM Result;
-
--- =============================================
--- End of Data Import
--- =============================================
