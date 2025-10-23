@@ -130,6 +130,7 @@ def import_data_sqlite():
                 'race_id': df_primary['raceId'],
                 'driver_id': df_primary['driverId'],
                 'team_id': df_primary['constructorId'],
+                'grid_position': pd.to_numeric(df_primary['grid'], errors='coerce'),
                 'position': pd.to_numeric(df_primary['position'], errors='coerce'),
                 'points': df_primary['points'],
                 'fastest_lap': df_primary['fastestLapTime'].apply(lambda x: None if pd.isna(x) else str(x)),
@@ -172,6 +173,7 @@ def import_data_sqlite():
                     'race_id': df_additional['raceId'],
                     'driver_id': df_additional['driverId'],
                     'team_id': df_additional['constructorId'],
+                    'grid_position': pd.to_numeric(df_additional['grid'], errors='coerce'),
                     'position': pd.to_numeric(df_additional['position'], errors='coerce'),
                     'points': df_additional['points'],
                     'fastest_lap': df_additional['fastestLapTime'].apply(lambda x: None if pd.isna(x) else str(x)),
@@ -192,6 +194,7 @@ def import_data_sqlite():
                 'race_id': df['raceId'],
                 'driver_id': df['driverId'],
                 'team_id': df['constructorId'],
+                'grid_position': pd.to_numeric(df['grid'], errors='coerce'),
                 'position': pd.to_numeric(df['position'], errors='coerce'),
                 'points': df['points'],
                 'fastest_lap': df['fastestLapTime'].apply(lambda x: None if pd.isna(x) else str(x)),
@@ -295,7 +298,7 @@ def create_tables_sqlite(cursor):
     """Create all tables for SQLite"""
     
     # Drop existing tables
-    tables = ['Driver_Elo', 'Team_Elo', 'Result', 'Race', 'Circuit', 'Driver', 'Team', 'Status']
+    tables = ['Driver_Elo', 'Team_Elo', 'Additional_Results', 'Result', 'Race', 'Circuit', 'Driver', 'Team', 'Status']
     for table in tables:
         cursor.execute(f"DROP TABLE IF EXISTS {table}")
     
@@ -366,6 +369,7 @@ def create_tables_sqlite(cursor):
             race_id INTEGER NOT NULL,
             driver_id INTEGER NOT NULL,
             team_id INTEGER NOT NULL,
+            grid_position INTEGER,
             position INTEGER,
             points REAL DEFAULT 0.00,
             fastest_lap TEXT,
@@ -387,6 +391,7 @@ def create_tables_sqlite(cursor):
             race_id INTEGER NOT NULL,
             driver_id INTEGER NOT NULL,
             team_id INTEGER NOT NULL,
+            grid_position INTEGER,
             position INTEGER,
             points REAL DEFAULT 0.00,
             fastest_lap TEXT,

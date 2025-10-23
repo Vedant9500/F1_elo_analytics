@@ -1,413 +1,619 @@
 """
-Enhanced F1 ELO Rating Calculation System
+Formula 1 Driver Elo Rating System
+===================================
 
-This implements a more sophisticated ELO system for F1 that addresses:
-1. Experience-based K-factors (rookies more volatile)
-2. Teammate performance weighting
-3. Era-adjusted ratings
-4. Car performance normalization
-5. DNF context (mechanical vs driver error)
-6. Grid position consideration
+A statistically robust Elo rating system for F1 drivers based on teammate comparisons.
 
-Based on research from:
-- FiveThirtyEight's NFL ELO system
-- ClubElo's football ratings
-- Academic papers on racing ELO systems
+Key Principles:
+1. TEAMMATE-ONLY COMPARISONS: Isolates driver skill from car performance
+2. DUAL RATINGS: Separate Qualifying Elo and Race Elo
+3. DYNAMIC K-FACTORS: Adapts to driver experience (40/20/10)
+4. PROPER DNF HANDLING: Distinguishes mechanical failures from driver errors
+5. GLOBAL ELO: Weighted combination (30% Qualifying, 70% Race)
+6. RATING NORMALIZATION: Prevents inflation across eras
+
+Based on the comprehensive framework from:
+"A Comprehensive Framework for a Robust Formula 1 Driver Elo Rating System"
 """
 
 import sqlite3
 import pandas as pd
 import numpy as np
-from pathlib import Path
 from datetime import datetime
-
-# Configuration
-DB_PATH = 'd:/f1-elo/DB/f1_database.db'
-INITIAL_ELO = 1500.0
-MIN_ELO = 800.0
-MAX_ELO = 2400.0
-
-# K-factor configuration (experience-based)
-K_FACTOR_ROOKIE = 40      # First 20 races
-K_FACTOR_DEVELOPING = 32  # Races 21-50
-K_FACTOR_ESTABLISHED = 24 # Races 51-100
-K_FACTOR_VETERAN = 20     # 100+ races
-
-# Weighting factors
-TEAMMATE_WEIGHT = 0.4     # Weight given to teammate comparison
-FIELD_WEIGHT = 0.6        # Weight given to overall field performance
-DNF_PENALTY_DRIVER = 0.3  # Penalty multiplier for driver-caused DNFs
-DNF_PENALTY_MECH = 0.1    # Penalty multiplier for mechanical DNFs
+from collections import defaultdict
 
 
-class EnhancedF1EloCalculator:
-    """Enhanced ELO rating system for F1 drivers"""
+class TeammateBasedF1Elo:
+    """
+    F1 Elo rating system using teammate head-to-head comparisons.
     
-    def __init__(self, db_path, initial_elo=1500):
+    This approach neutralizes car performance differences by only comparing
+    drivers in the same machinery, providing a pure measure of driver skill.
+    """
+    
+    def __init__(self, db_path='DB/f1_database.db'):
         self.db_path = db_path
-        self.initial_elo = initial_elo
-        self.driver_elos = {}
-        self.driver_race_count = {}
-        self.team_strength = {}  # Rolling team strength estimate
+        self.conn = sqlite3.connect(db_path)
         
-    def get_k_factor(self, driver_id):
-        """
-        Get K-factor based on driver experience
-        More experienced drivers have lower K-factor (less volatile)
-        """
-        races = self.driver_race_count.get(driver_id, 0)
+        # Initial rating for all new drivers
+        self.INITIAL_RATING = 1500
         
-        if races < 20:
-            return K_FACTOR_ROOKIE
-        elif races < 50:
-            return K_FACTOR_DEVELOPING
-        elif races < 100:
-            return K_FACTOR_ESTABLISHED
+        # Dynamic K-factor thresholds
+        self.ROOKIE_RACES = 30  # First 30 races use high K-factor
+        self.ELITE_THRESHOLD = 1750  # Once achieved, permanently use low K-factor
+        
+        # K-factor values
+        self.K_ROOKIE = 40  # High volatility for new drivers
+        self.K_ESTABLISHED = 20  # Standard for mid-career
+        self.K_ELITE = 10  # Low volatility for proven elite drivers
+        
+        # Global Elo weights
+        self.QUALIFYING_WEIGHT = 0.3
+        self.RACE_WEIGHT = 0.7
+        
+        # Driver rating storage
+        # Structure: {driver_id: {
+        #   'qualifying_elo': float,
+        #   'race_elo': float,
+        #   'qualifying_races': int,
+        #   'race_races': int,
+        #   'ever_elite_qualifying': bool,
+        #   'ever_elite_race': bool
+        # }}
+        self.driver_ratings = defaultdict(lambda: {
+            'qualifying_elo': self.INITIAL_RATING,
+            'race_elo': self.INITIAL_RATING,
+            'qualifying_races': 0,
+            'race_races': 0,
+            'ever_elite_qualifying': False,
+            'ever_elite_race': False
+        })
+        
+        # Mechanical failure status codes (DNFs that should be EXCLUDED)
+        self.MECHANICAL_FAILURES = {
+            'Engine', 'Gearbox', 'Transmission', 'Clutch', 'Hydraulics',
+            'Electrical', 'Electronics', 'Fuel System', 'Fuel Pump',
+            'Fuel Pressure', 'Oil Pressure', 'Oil Leak', 'Radiator',
+            'Cooling System', 'Water Leak', 'Overheating', 'Suspension',
+            'Brakes', 'Wheel', 'Wheel Bearing', 'Puncture', 'Driveshaft',
+            'CV Joint', 'Differential', 'Halfshaft', 'Battery', 'Alternator',
+            'Turbo', 'Throttle', 'Fuel Leak', 'Fire', 'Power Unit',
+            'ERS', 'MGU-K', 'MGU-H', 'Pneumatics', 'Exhaust'
+        }
+        
+        # Driver error status codes (DNFs that should be INCLUDED as losses)
+        self.DRIVER_ERRORS = {
+            'Accident', 'Collision', 'Spun off', 'Damage', 'Collision damage',
+            'Fatal accident', 'Injury', 'Driver Seat', 'Seat'
+        }
+        
+    def get_k_factor(self, current_elo, races_completed, ever_elite):
+        """
+        Dynamic K-factor based on driver experience and rating.
+        
+        Tier 1 (Rookie): K=40 for first 30 races
+        Tier 2 (Established): K=20 for >30 races if rating < 1750
+        Tier 3 (Elite): K=10 if rating ever exceeded 1750
+        """
+        if ever_elite:
+            return self.K_ELITE
+        elif races_completed < self.ROOKIE_RACES:
+            return self.K_ROOKIE
         else:
-            return K_FACTOR_VETERAN
+            return self.K_ESTABLISHED
     
     def expected_score(self, rating_a, rating_b):
-        """Calculate expected score using standard ELO formula"""
+        """
+        Calculate expected score using standard Elo formula.
+        
+        E_A = 1 / (1 + 10^((R_B - R_A) / 400))
+        """
         return 1 / (1 + 10 ** ((rating_b - rating_a) / 400))
     
-    def calculate_position_score(self, position, total_participants, dnf_type=None):
+    def update_rating(self, rating, k_factor, actual_score, expected_score):
         """
-        Calculate score based on finishing position
-        Accounts for DNFs differently based on cause
+        Update Elo rating based on match outcome.
+        
+        New_Rating = Old_Rating + K * (Actual - Expected)
         """
-        if position is None or pd.isna(position):
-            # DNF - apply penalty based on type
-            if dnf_type in ['Accident', 'Collision', 'Spun off']:
-                return DNF_PENALTY_DRIVER  # Driver error
-            else:
-                return DNF_PENALTY_MECH    # Mechanical/other
-        
-        # Exponential scoring (winning is much better than 2nd)
-        # Formula: e^(-position/scale) normalized
-        scale = total_participants / 4
-        max_score = 1.0
-        position_score = np.exp(-(position - 1) / scale)
-        
-        return position_score
+        return rating + k_factor * (actual_score - expected_score)
     
-    def get_teammate_pairs(self, race_results):
-        """Identify teammates in the same race"""
-        teammates = {}
-        for _, row in race_results.iterrows():
-            team_id = row['team_id']
-            if team_id not in teammates:
-                teammates[team_id] = []
-            teammates[team_id].append(row)
+    def is_mechanical_dnf(self, status):
+        """Check if DNF reason is mechanical (should exclude matchup)."""
+        if pd.isna(status) or status == '':
+            return False
         
-        pairs = []
-        for team_id, drivers in teammates.items():
-            if len(drivers) == 2:
-                pairs.append((drivers[0], drivers[1]))
+        status_upper = str(status).upper()
         
-        return pairs
+        # Check for mechanical failure keywords
+        for failure in self.MECHANICAL_FAILURES:
+            if failure.upper() in status_upper:
+                return True
+        return False
     
-    def update_team_strength(self, race_results):
-        """
-        Update rolling estimate of team strength
-        Based on average driver ELO and recent performance
-        """
-        for team_id in race_results['team_id'].unique():
-            team_drivers = race_results[race_results['team_id'] == team_id]
-            avg_elo = np.mean([self.driver_elos.get(d, self.initial_elo) 
-                              for d in team_drivers['driver_id']])
-            
-            # Exponential moving average (alpha = 0.3)
-            if team_id not in self.team_strength:
-                self.team_strength[team_id] = avg_elo
-            else:
-                self.team_strength[team_id] = 0.7 * self.team_strength[team_id] + 0.3 * avg_elo
+    def is_driver_error_dnf(self, status):
+        """Check if DNF reason is driver error (should count as loss)."""
+        if pd.isna(status) or status == '':
+            return False
+        
+        status_upper = str(status).upper()
+        
+        # Check for driver error keywords
+        for error in self.DRIVER_ERRORS:
+            if error.upper() in status_upper:
+                return True
+        return False
     
-    def calculate_driver_elo_change(self, driver_row, race_results, teammate_pairs):
+    def is_finished(self, status):
+        """Check if driver finished the race (classified)."""
+        if pd.isna(status):
+            return False
+        return str(status).strip() == 'Finished' or str(status).startswith('+')
+    
+    def process_qualifying_matchup(self, driver1_id, driver2_id, driver1_pos, driver2_pos,
+                                   driver1_status, driver2_status):
         """
-        Calculate ELO change for a driver considering:
-        1. Performance vs entire field
-        2. Performance vs teammate
-        3. Car performance normalization
+        Process a qualifying head-to-head between teammates.
+        
+        Returns: True if matchup was processed, False if excluded
         """
-        driver_id = driver_row['driver_id']
-        current_elo = self.driver_elos.get(driver_id, self.initial_elo)
-        k_factor = self.get_k_factor(driver_id)
+        # Exclude if either driver had mechanical issues
+        if self.is_mechanical_dnf(driver1_status) or self.is_mechanical_dnf(driver2_status):
+            return False
         
-        total_participants = len(race_results)
-        driver_position = driver_row['position']
+        # Determine winner (lower position is better)
+        if driver1_pos < driver2_pos:
+            winner_id, loser_id = driver1_id, driver2_id
+        else:
+            winner_id, loser_id = driver2_id, driver1_id
         
-        # 1. Field performance score
-        actual_score = self.calculate_position_score(
-            driver_position, total_participants, driver_row['status']
+        # Get current ratings
+        winner_elo = self.driver_ratings[winner_id]['qualifying_elo']
+        loser_elo = self.driver_ratings[loser_id]['qualifying_elo']
+        
+        # Calculate expected scores
+        winner_expected = self.expected_score(winner_elo, loser_elo)
+        loser_expected = 1 - winner_expected
+        
+        # Get K-factors
+        winner_k = self.get_k_factor(
+            winner_elo,
+            self.driver_ratings[winner_id]['qualifying_races'],
+            self.driver_ratings[winner_id]['ever_elite_qualifying']
+        )
+        loser_k = self.get_k_factor(
+            loser_elo,
+            self.driver_ratings[loser_id]['qualifying_races'],
+            self.driver_ratings[loser_id]['ever_elite_qualifying']
         )
         
-        # Calculate expected score vs entire field
-        field_expected = 0
-        for _, opponent in race_results.iterrows():
-            if opponent['driver_id'] != driver_id:
-                opponent_elo = self.driver_elos.get(opponent['driver_id'], self.initial_elo)
-                field_expected += self.expected_score(current_elo, opponent_elo)
-        field_expected /= (total_participants - 1)
+        # Update ratings (winner gets 1, loser gets 0)
+        new_winner_elo = self.update_rating(winner_elo, winner_k, 1, winner_expected)
+        new_loser_elo = self.update_rating(loser_elo, loser_k, 0, loser_expected)
         
-        # 2. Teammate performance (if applicable)
-        teammate_score = 0.5  # Neutral if no teammate
-        teammate_expected = 0.5
+        # Store updated ratings
+        self.driver_ratings[winner_id]['qualifying_elo'] = new_winner_elo
+        self.driver_ratings[loser_id]['qualifying_elo'] = new_loser_elo
         
-        for pair in teammate_pairs:
-            if driver_row['driver_id'] == pair[0]['driver_id']:
-                teammate = pair[1]
-                teammate_elo = self.driver_elos.get(teammate['driver_id'], self.initial_elo)
-                
-                # Who finished better?
-                driver_pos = driver_row['position'] if pd.notna(driver_row['position']) else 999
-                teammate_pos = teammate['position'] if pd.notna(teammate['position']) else 999
-                
-                if driver_pos < teammate_pos:
-                    teammate_score = 1.0
-                elif driver_pos > teammate_pos:
-                    teammate_score = 0.0
-                else:
-                    teammate_score = 0.5
-                
-                teammate_expected = self.expected_score(current_elo, teammate_elo)
-                break
-            
-            elif driver_row['driver_id'] == pair[1]['driver_id']:
-                teammate = pair[0]
-                teammate_elo = self.driver_elos.get(teammate['driver_id'], self.initial_elo)
-                
-                driver_pos = driver_row['position'] if pd.notna(driver_row['position']) else 999
-                teammate_pos = teammate['position'] if pd.notna(teammate['position']) else 999
-                
-                if driver_pos < teammate_pos:
-                    teammate_score = 1.0
-                elif driver_pos > teammate_pos:
-                    teammate_score = 0.0
-                else:
-                    teammate_score = 0.5
-                
-                teammate_expected = self.expected_score(current_elo, teammate_elo)
-                break
+        # Increment race counters
+        self.driver_ratings[winner_id]['qualifying_races'] += 1
+        self.driver_ratings[loser_id]['qualifying_races'] += 1
         
-        # 3. Combine field and teammate performance with weights
-        combined_actual = (FIELD_WEIGHT * actual_score + TEAMMATE_WEIGHT * teammate_score)
-        combined_expected = (FIELD_WEIGHT * field_expected + TEAMMATE_WEIGHT * teammate_expected)
+        # Check for elite status
+        if new_winner_elo >= self.ELITE_THRESHOLD:
+            self.driver_ratings[winner_id]['ever_elite_qualifying'] = True
+        if new_loser_elo >= self.ELITE_THRESHOLD:
+            self.driver_ratings[loser_id]['ever_elite_qualifying'] = True
         
-        # 4. Calculate ELO change
-        elo_change = k_factor * (combined_actual - combined_expected)
-        new_elo = current_elo + elo_change
-        
-        # Clamp to min/max
-        new_elo = max(MIN_ELO, min(MAX_ELO, new_elo))
-        
-        return new_elo, elo_change
+        return True
     
-    def calculate_driver_elos(self):
-        """Calculate ELO ratings for all drivers across all races"""
-        
-        conn = sqlite3.connect(self.db_path)
-        
-        # Get all races ordered by date
-        races_query = """
-            SELECT race_id, race_name, race_date, season_year
-            FROM Race
-            ORDER BY race_date, race_id
+    def process_race_matchup(self, driver1_id, driver2_id, driver1_pos, driver2_pos,
+                            driver1_status, driver2_status):
         """
-        races = pd.read_sql_query(races_query, conn)
+        Process a race head-to-head between teammates.
         
-        print(f"\nCalculating Enhanced ELO ratings for {len(races)} races...")
-        print(f"Using experience-based K-factors:")
-        print(f"  Rookie (0-20 races):      K={K_FACTOR_ROOKIE}")
-        print(f"  Developing (21-50):       K={K_FACTOR_DEVELOPING}")
-        print(f"  Established (51-100):     K={K_FACTOR_ESTABLISHED}")
-        print(f"  Veteran (100+):           K={K_FACTOR_VETERAN}")
-        print(f"\nWeighting: Field={FIELD_WEIGHT}, Teammate={TEAMMATE_WEIGHT}\n")
+        Returns: True if matchup was processed, False if excluded
+        """
+        # Check if either driver had mechanical DNF (exclude matchup)
+        d1_mechanical = self.is_mechanical_dnf(driver1_status)
+        d2_mechanical = self.is_mechanical_dnf(driver2_status)
+        
+        if d1_mechanical or d2_mechanical:
+            return False
+        
+        # Check if drivers had driver error DNF (counts as loss)
+        d1_error = self.is_driver_error_dnf(driver1_status)
+        d2_error = self.is_driver_error_dnf(driver2_status)
+        d1_finished = self.is_finished(driver1_status)
+        d2_finished = self.is_finished(driver2_status)
+        
+        # If both DNF'd due to driver error, exclude (no clean winner)
+        if d1_error and d2_error:
+            return False
+        
+        # Determine winner
+        # Driver error DNF automatically loses if opponent finished or had no error
+        if d1_error and (d2_finished or not d2_error):
+            winner_id, loser_id = driver2_id, driver1_id
+        elif d2_error and (d1_finished or not d1_error):
+            winner_id, loser_id = driver1_id, driver2_id
+        else:
+            # Normal comparison by position (lower is better)
+            if driver1_pos < driver2_pos:
+                winner_id, loser_id = driver1_id, driver2_id
+            else:
+                winner_id, loser_id = driver2_id, driver1_id
+        
+        # Get current ratings
+        winner_elo = self.driver_ratings[winner_id]['race_elo']
+        loser_elo = self.driver_ratings[loser_id]['race_elo']
+        
+        # Calculate expected scores
+        winner_expected = self.expected_score(winner_elo, loser_elo)
+        loser_expected = 1 - winner_expected
+        
+        # Get K-factors
+        winner_k = self.get_k_factor(
+            winner_elo,
+            self.driver_ratings[winner_id]['race_races'],
+            self.driver_ratings[winner_id]['ever_elite_race']
+        )
+        loser_k = self.get_k_factor(
+            loser_elo,
+            self.driver_ratings[loser_id]['race_races'],
+            self.driver_ratings[loser_id]['ever_elite_race']
+        )
+        
+        # Update ratings
+        new_winner_elo = self.update_rating(winner_elo, winner_k, 1, winner_expected)
+        new_loser_elo = self.update_rating(loser_elo, loser_k, 0, loser_expected)
+        
+        # Store updated ratings
+        self.driver_ratings[winner_id]['race_elo'] = new_winner_elo
+        self.driver_ratings[loser_id]['race_elo'] = new_loser_elo
+        
+        # Increment race counters
+        self.driver_ratings[winner_id]['race_races'] += 1
+        self.driver_ratings[loser_id]['race_races'] += 1
+        
+        # Check for elite status
+        if new_winner_elo >= self.ELITE_THRESHOLD:
+            self.driver_ratings[winner_id]['ever_elite_race'] = True
+        if new_loser_elo >= self.ELITE_THRESHOLD:
+            self.driver_ratings[loser_id]['ever_elite_race'] = True
+        
+        return True
+    
+    def normalize_ratings(self, season_year):
+        """
+        Normalize all ratings to mean of 1500 at end of season.
+        Prevents rating inflation across eras.
+        """
+        if not self.driver_ratings:
+            return
+        
+        # Calculate mean qualifying Elo
+        qualifying_elos = [r['qualifying_elo'] for r in self.driver_ratings.values()]
+        mean_qualifying = np.mean(qualifying_elos)
+        
+        # Calculate mean race Elo
+        race_elos = [r['race_elo'] for r in self.driver_ratings.values()]
+        mean_race = np.mean(race_elos)
+        
+        # Normalize all ratings
+        for driver_id in self.driver_ratings:
+            # Qualifying normalization
+            self.driver_ratings[driver_id]['qualifying_elo'] = (
+                self.driver_ratings[driver_id]['qualifying_elo'] - 
+                mean_qualifying + self.INITIAL_RATING
+            )
+            
+            # Race normalization
+            self.driver_ratings[driver_id]['race_elo'] = (
+                self.driver_ratings[driver_id]['race_elo'] - 
+                mean_race + self.INITIAL_RATING
+            )
+        
+        print(f"  Season {season_year} normalized: Quali mean {mean_qualifying:.1f}→1500, "
+              f"Race mean {mean_race:.1f}→1500")
+    
+    def calculate_global_elo(self, qualifying_elo, race_elo):
+        """
+        Calculate Global Elo as weighted combination.
+        
+        Global = 30% Qualifying + 70% Race
+        """
+        return (self.QUALIFYING_WEIGHT * qualifying_elo + 
+                self.RACE_WEIGHT * race_elo)
+    
+    def calculate_reliability_score(self, matchups):
+        """
+        Calculate reliability score (0-100) based on sample size.
+        
+        Uses sigmoid function to reward larger sample sizes:
+        - 100 matchups = ~95% reliability
+        - 50 matchups = ~85% reliability
+        - 20 matchups = ~63% reliability
+        - 10 matchups = ~45% reliability
+        """
+        # Sigmoid function: reliability = 100 / (1 + e^(-(matchups - 30)/20))
+        import math
+        reliability = 100 / (1 + math.exp(-(matchups - 30) / 20))
+        return round(reliability, 1)
+    
+    def calculate_era_adjustment(self, debut_year, total_matchups):
+        """
+        Calculate era adjustment factor to account for:
+        1. Fewer races in early eras
+        2. Smaller field sizes
+        3. Less competitive depth
+        
+        Adjustment reduces Elo for drivers with limited competition.
+        """
+        # Era difficulty multipliers (based on field strength research)
+        if debut_year < 1960:
+            era_multiplier = 0.92  # Early era: smaller fields, less depth
+        elif debut_year < 1970:
+            era_multiplier = 0.95  # 1960s: growing competition
+        elif debut_year < 1980:
+            era_multiplier = 0.97  # 1970s: professional era begins
+        elif debut_year < 2000:
+            era_multiplier = 0.99  # Modern era: high competition
+        else:
+            era_multiplier = 1.00  # Contemporary: peak competition
+        
+        # Sample size penalty for very few matchups
+        if total_matchups < 30:
+            sample_penalty = 0.95  # Reduce confidence for small samples
+        else:
+            sample_penalty = 1.00
+        
+        return era_multiplier * sample_penalty
+    
+    def calculate_all_elos(self):
+        """
+        Main calculation loop: process all races chronologically.
+        """
+        print("="*70)
+        print("F1 TEAMMATE-BASED ELO RATING SYSTEM")
+        print("="*70)
+        print(f"Initial Rating: {self.INITIAL_RATING}")
+        print(f"K-Factors: Rookie={self.K_ROOKIE}, Established={self.K_ESTABLISHED}, "
+              f"Elite={self.K_ELITE}")
+        print(f"Global Elo Weights: {self.QUALIFYING_WEIGHT*100:.0f}% Qualifying, "
+              f"{self.RACE_WEIGHT*100:.0f}% Race")
+        print("="*70)
+        
+        # Get all races ordered chronologically
+        query = """
+            SELECT r.race_id, r.season_year, r.round_number, r.race_name, r.race_date
+            FROM Race r
+            ORDER BY r.race_date, r.round_number
+        """
+        races = pd.read_sql_query(query, self.conn)
+        
+        current_season = None
+        total_quali_matchups = 0
+        total_race_matchups = 0
         
         for idx, race in races.iterrows():
             race_id = race['race_id']
+            year = race['season_year']
             
-            # Get all results for this race
-            results_query = f"""
-                SELECT result_id, driver_id, team_id, position, points, status
-                FROM Result
-                WHERE race_id = {race_id}
-                ORDER BY COALESCE(position, 999), result_id
+            # Season normalization at year end
+            if current_season is not None and year != current_season:
+                self.normalize_ratings(current_season)
+            current_season = year
+            
+            # Get all results for this race with team information
+            results_query = """
+                SELECT 
+                    res.result_id,
+                    res.driver_id,
+                    res.team_id,
+                    res.grid_position,
+                    res.position,
+                    res.status,
+                    d.first_name,
+                    d.last_name
+                FROM Result res
+                JOIN Driver d ON res.driver_id = d.driver_id
+                WHERE res.race_id = ?
+                ORDER BY res.team_id, res.position
             """
-            results = pd.read_sql_query(results_query, conn)
+            results = pd.read_sql_query(results_query, self.conn, params=(race_id,))
             
-            if len(results) == 0:
+            if results.empty:
                 continue
             
-            # Initialize ELO for new drivers
-            for driver_id in results['driver_id']:
-                if driver_id not in self.driver_elos:
-                    self.driver_elos[driver_id] = self.initial_elo
-                    self.driver_race_count[driver_id] = 0
+            # Group by team to find teammate pairs
+            teams = results.groupby('team_id')
             
-            # Update team strength estimates
-            self.update_team_strength(results)
+            quali_matchups = 0
+            race_matchups = 0
             
-            # Get teammate pairs
-            teammate_pairs = self.get_teammate_pairs(results)
-            
-            # Calculate new ELOs for this race
-            new_elos = {}
-            elo_changes = {}
-            
-            for _, driver_row in results.iterrows():
-                driver_id = driver_row['driver_id']
-                new_elo, elo_change = self.calculate_driver_elo_change(
-                    driver_row, results, teammate_pairs
-                )
-                new_elos[driver_id] = new_elo
-                elo_changes[driver_id] = elo_change
-            
-            # Apply all ELO changes for this race
-            for driver_id, new_elo in new_elos.items():
-                self.driver_elos[driver_id] = new_elo
-                self.driver_race_count[driver_id] += 1
-            
-            # Save ELO ratings to database
-            self.save_driver_elos(conn, race_id)
-            
-            if (idx + 1) % 100 == 0:
-                print(f"  Processed {idx + 1}/{len(races)} races")
-        
-        conn.commit()
-        conn.close()
-        
-        print(f"\n✓ Enhanced Driver ELO calculation complete!")
-    
-    def save_driver_elos(self, conn, race_id):
-        """Save current driver ELO ratings to database"""
-        cursor = conn.cursor()
-        
-        for driver_id, elo_rating in self.driver_elos.items():
-            cursor.execute("""
-                INSERT OR REPLACE INTO Driver_Elo 
-                (driver_id, race_id, elo_rating, updated_on)
-                VALUES (?, ?, ?, CURRENT_TIMESTAMP)
-            """, (driver_id, race_id, round(elo_rating, 2)))
-    
-    def get_current_driver_rankings(self, conn, top_n=20):
-        """Get current driver rankings with experience info"""
-        query = f"""
-            SELECT d.first_name, d.last_name, d.nationality,
-                   de.elo_rating, r.race_date,
-                   COUNT(res.result_id) as career_races
-            FROM Driver_Elo de
-            JOIN Driver d ON de.driver_id = d.driver_id
-            JOIN Race r ON de.race_id = r.race_id
-            LEFT JOIN Result res ON d.driver_id = res.driver_id
-            WHERE de.race_id = (SELECT MAX(race_id) FROM Race)
-            GROUP BY d.driver_id, d.first_name, d.last_name, d.nationality, de.elo_rating, r.race_date
-            ORDER BY de.elo_rating DESC
-            LIMIT {top_n}
-        """
-        return pd.read_sql_query(query, conn)
-    
-    def calculate_team_elos(self):
-        """Calculate team ELO ratings (simplified version)"""
-        conn = sqlite3.connect(self.db_path)
-        
-        # Get all races ordered by date
-        races_query = """
-            SELECT race_id, race_name, race_date, season_year
-            FROM Race
-            ORDER BY race_date, race_id
-        """
-        races = pd.read_sql_query(races_query, conn)
-        
-        print(f"\nCalculating Team ELO ratings for {len(races)} races...")
-        
-        for idx, race in races.iterrows():
-            race_id = race['race_id']
-            
-            # Get team results (average of drivers' ELO)
-            results_query = f"""
-                SELECT DISTINCT r.team_id,
-                       AVG(de.elo_rating) as avg_driver_elo,
-                       SUM(r.points) as team_points
-                FROM Result r
-                LEFT JOIN Driver_Elo de ON r.driver_id = de.driver_id AND r.race_id = de.race_id
-                WHERE r.race_id = {race_id}
-                GROUP BY r.team_id
-                ORDER BY team_points DESC
-            """
-            team_results = pd.read_sql_query(results_query, conn)
-            
-            if len(team_results) == 0:
-                continue
-            
-            # Initialize or update team ELO based on driver performance
-            cursor = conn.cursor()
-            for _, team_row in team_results.iterrows():
-                team_id = team_row['team_id']
-                avg_elo = team_row['avg_driver_elo']
+            for team_id, team_results in teams:
+                if len(team_results) < 2:
+                    continue  # Need at least 2 drivers
                 
-                if pd.notna(avg_elo):
-                    cursor.execute("""
-                        INSERT OR REPLACE INTO Team_Elo 
-                        (team_id, race_id, elo_rating, updated_on)
-                        VALUES (?, ?, ?, CURRENT_TIMESTAMP)
-                    """, (team_id, race_id, round(avg_elo, 2)))
+                # Sort by driver_id to ensure consistent pairing
+                team_results = team_results.sort_values('driver_id')
+                drivers = team_results.to_dict('records')
+                
+                # Process all pairwise combinations (usually just 2 drivers)
+                for i in range(len(drivers)):
+                    for j in range(i + 1, len(drivers)):
+                        d1, d2 = drivers[i], drivers[j]
+                        
+                        # Process qualifying matchup
+                        if pd.notna(d1['grid_position']) and pd.notna(d2['grid_position']):
+                            if self.process_qualifying_matchup(
+                                d1['driver_id'], d2['driver_id'],
+                                d1['grid_position'], d2['grid_position'],
+                                d1['status'], d2['status']
+                            ):
+                                quali_matchups += 1
+                        
+                        # Process race matchup
+                        if pd.notna(d1['position']) and pd.notna(d2['position']):
+                            if self.process_race_matchup(
+                                d1['driver_id'], d2['driver_id'],
+                                d1['position'], d2['position'],
+                                d1['status'], d2['status']
+                            ):
+                                race_matchups += 1
             
-            if (idx + 1) % 100 == 0:
-                print(f"  Processed {idx + 1}/{len(races)} races")
+            total_quali_matchups += quali_matchups
+            total_race_matchups += race_matchups
+            
+            # Progress update every 50 races
+            if (idx + 1) % 50 == 0:
+                print(f"Processed {idx + 1}/{len(races)} races... "
+                      f"(Quali: {total_quali_matchups}, Race: {total_race_matchups} matchups)")
         
-        conn.commit()
-        conn.close()
+        # Final season normalization
+        if current_season is not None:
+            self.normalize_ratings(current_season)
         
-        print(f"✓ Team ELO calculation complete!")
+        print("="*70)
+        print(f"CALCULATION COMPLETE")
+        print(f"Total Races Processed: {len(races)}")
+        print(f"Total Qualifying Matchups: {total_quali_matchups}")
+        print(f"Total Race Matchups: {total_race_matchups}")
+        print(f"Drivers Rated: {len(self.driver_ratings)}")
+        print("="*70)
+    
+    def save_to_database(self):
+        """
+        Save all calculated Elo ratings to the database.
+        """
+        print("\nSaving ratings to database...")
+        
+        # Clear existing ratings
+        self.conn.execute("DELETE FROM Driver_Elo")
+        
+        # Get driver names and debut years for the output
+        driver_query = """
+            SELECT d.driver_id, d.first_name, d.last_name, d.debut_year
+            FROM Driver d
+        """
+        drivers_df = pd.read_sql_query(driver_query, self.conn)
+        driver_info = {row['driver_id']: {
+            'name': f"{row['first_name']} {row['last_name']}",
+            'debut_year': row['debut_year']
+        } for _, row in drivers_df.iterrows()}
+        
+        # Prepare data for insertion
+        elo_records = []
+        for driver_id, ratings in self.driver_ratings.items():
+            qualifying_elo = ratings['qualifying_elo']
+            race_elo = ratings['race_elo']
+            global_elo = self.calculate_global_elo(qualifying_elo, race_elo)
+            
+            # Calculate additional metrics
+            total_matchups = ratings['qualifying_races'] + ratings['race_races']
+            reliability_score = self.calculate_reliability_score(total_matchups)
+            
+            # Get debut year
+            debut_year = driver_info.get(driver_id, {}).get('debut_year', 2000)
+            
+            # Calculate era-adjusted Elo
+            era_adjustment = self.calculate_era_adjustment(debut_year, total_matchups)
+            era_adjusted_elo = global_elo * era_adjustment
+            
+            elo_records.append({
+                'driver_id': driver_id,
+                'qualifying_elo': round(qualifying_elo, 2),
+                'race_elo': round(race_elo, 2),
+                'global_elo': round(global_elo, 2),
+                'era_adjusted_elo': round(era_adjusted_elo, 2),
+                'qualifying_races': ratings['qualifying_races'],
+                'race_races': ratings['race_races'],
+                'total_matchups': total_matchups,
+                'reliability_score': reliability_score,
+                'debut_year': debut_year
+            })
+        
+        # Insert into database
+        elo_df = pd.DataFrame(elo_records)
+        elo_df.to_sql('Driver_Elo', self.conn, if_exists='replace', index=False)
+        
+        self.conn.commit()
+        print(f"✓ Saved {len(elo_records)} driver ratings to database")
+        
+        # Display top 20 by Global Elo (Raw)
+        print("\n" + "="*80)
+        print("TOP 20 DRIVERS BY GLOBAL ELO (Raw - Not Era Adjusted)")
+        print("="*80)
+        print(f"{'Rank':<6}{'Driver':<25}{'Global':<10}{'Quali':<10}{'Race':<10}{'Matchups':<10}{'Reliability'}")
+        print("-"*80)
+        
+        top_20_raw = sorted(elo_records, key=lambda x: x['global_elo'], reverse=True)[:20]
+        for rank, record in enumerate(top_20_raw, 1):
+            driver_name = driver_info.get(record['driver_id'], {}).get('name', 'Unknown')
+            print(f"{rank:<6}{driver_name:<25}"
+                  f"{record['global_elo']:<10.1f}"
+                  f"{record['qualifying_elo']:<10.1f}"
+                  f"{record['race_elo']:<10.1f}"
+                  f"{record['total_matchups']:<10}"
+                  f"{record['reliability_score']:.1f}%")
+        
+        # Display top 20 by Era-Adjusted Elo
+        print("\n" + "="*80)
+        print("TOP 20 DRIVERS BY ERA-ADJUSTED ELO (Accounts for competition depth & sample size)")
+        print("="*80)
+        print(f"{'Rank':<6}{'Driver':<25}{'Adj. Elo':<12}{'Raw Elo':<10}{'Era':<8}{'Matchups':<10}{'Reliability'}")
+        print("-"*80)
+        
+        top_20_adj = sorted(elo_records, key=lambda x: x['era_adjusted_elo'], reverse=True)[:20]
+        for rank, record in enumerate(top_20_adj, 1):
+            driver_name = driver_info.get(record['driver_id'], {}).get('name', 'Unknown')
+            debut = record.get('debut_year', 'N/A')
+            print(f"{rank:<6}{driver_name:<25}"
+                  f"{record['era_adjusted_elo']:<12.1f}"
+                  f"{record['global_elo']:<10.1f}"
+                  f"{debut:<8}"
+                  f"{record['total_matchups']:<10}"
+                  f"{record['reliability_score']:.1f}%")
+        
+        print("="*80)
+        print("\nRELIABILITY GUIDE:")
+        print("  >90% = Very Reliable (100+ matchups)")
+        print("  70-90% = Reliable (40-100 matchups)")
+        print("  50-70% = Moderate (15-40 matchups)")
+        print("  <50% = Low Confidence (<15 matchups)")
+        print("="*80)
+    
+    def close(self):
+        """Close database connection."""
+        self.conn.close()
 
 
 def main():
-    """Main execution function"""
+    """Main execution function."""
+    print("\nInitializing Teammate-Based F1 Elo Calculator...")
     
-    print("="*70)
-    print("ENHANCED F1 ELO RATING CALCULATOR")
-    print("="*70)
-    print(f"Database: {DB_PATH}")
-    print(f"Initial ELO: {INITIAL_ELO}")
-    print(f"ELO Range: {MIN_ELO} - {MAX_ELO}")
-    print("="*70)
+    calculator = TeammateBasedF1Elo('DB/f1_database.db')
     
-    # Initialize calculator
-    calculator = EnhancedF1EloCalculator(DB_PATH, INITIAL_ELO)
+    try:
+        # Calculate all Elo ratings
+        calculator.calculate_all_elos()
+        
+        # Save to database
+        calculator.save_to_database()
+        
+        print("\n✓ Elo calculation complete!")
+        print("  Ratings saved to Driver_Elo table")
+        print("  Query with: SELECT * FROM Driver_Elo ORDER BY global_elo DESC")
+        
+    except Exception as e:
+        print(f"\n✗ Error during calculation: {e}")
+        import traceback
+        traceback.print_exc()
     
-    # Calculate driver ELOs
-    calculator.calculate_driver_elos()
-    
-    # Calculate team ELOs
-    calculator.calculate_team_elos()
-    
-    # Display results
-    conn = sqlite3.connect(DB_PATH)
-    
-    print("\n" + "="*70)
-    print("TOP 20 DRIVERS BY CURRENT ELO RATING")
-    print("="*70)
-    driver_rankings = calculator.get_current_driver_rankings(conn, 20)
-    print(f"{'Rank':<6}{'Driver':<30}{'Nationality':<15}{'ELO':<10}{'Races'}")
-    print("-"*70)
-    for idx, row in driver_rankings.iterrows():
-        driver_name = f"{row['first_name']} {row['last_name']}"
-        print(f"{idx+1:<6}{driver_name:<30}{row['nationality']:<15}"
-              f"{row['elo_rating']:<10.2f}{row['career_races']}")
-    
-    print("\n" + "="*70)
-    print("Enhanced ELO Calculation Complete!")
-    print("="*70)
-    print("\nKey Improvements:")
-    print("✓ Experience-based K-factors (rookies more volatile)")
-    print("✓ Teammate performance weighting (40%)")
-    print("✓ Field performance weighting (60%)")
-    print("✓ DNF context consideration (driver vs mechanical)")
-    print("✓ Exponential position scoring (winning matters more)")
-    print("="*70)
-    
-    conn.close()
+    finally:
+        calculator.close()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
