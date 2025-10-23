@@ -1,7 +1,6 @@
 # Large data files
 data/*.csv
 archive/
-*.db
 
 # Python cache
 __pycache__/
