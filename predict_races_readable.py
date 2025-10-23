@@ -97,16 +97,16 @@ class F1RacePredictor:
         # Load test data
         test_df = pd.read_csv('data/test_data_v5.csv')
         
-        print(f"\nLoaded {len(test_df)} results from {test_df['race_name'].nunique()} races in 2024")
+        print(f"\nLoaded {len(test_df)} results from {test_df['name'].nunique()} races in 2024")
         
         # Get unique races
-        races = test_df['race_name'].unique()
+        races = test_df['name'].unique()
         
         # Predict each race
         all_predictions = []
         
         for race_name in races:
-            race_data = test_df[test_df['race_name'] == race_name].copy()
+            race_data = test_df[test_df['name'] == race_name].copy()
             predictions = self.predict_race(race_data)
             
             # Add actual results for comparison
