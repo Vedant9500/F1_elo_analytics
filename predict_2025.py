@@ -273,8 +273,12 @@ class F1_2025_Predictor:
         
         # Classification metrics
         winner_correct = (predicted[actual == 1] == 1).any()
-        podium_pred = set(df_race[predicted <= 3]['driver_name_clean'].values)
-        podium_actual = set(df_race[actual <= 3]['driver_name_clean'].values)
+        
+        # Get driver name column
+        driver_col = 'driver_name_clean' if 'driver_name_clean' in df_race.columns else 'driver_name'
+        
+        podium_pred = set(df_race[predicted <= 3][driver_col].values)
+        podium_actual = set(df_race[actual <= 3][driver_col].values)
         podium_overlap = len(podium_pred & podium_actual)
         
         return {
@@ -363,6 +367,86 @@ class F1_2025_Predictor:
         print(f"   Within ±2 positions: {within_2:.1f}%")
         print(f"   Winner predicted: {'Yes ✓' if winner_correct else 'No ✗'}")
         print(f"   Podium overlap: {podium_overlap}/3 drivers")
+    
+    def display_2024_race_prediction(self, race_name, race_date, df_race, actual, predicted):
+        """Display human-readable prediction analysis for a 2024 race"""
+        print("\n" + "="*80)
+        print(f"🏁 {race_name}")
+        print(f"📅 Date: {race_date.strftime('%B %d, %Y')}")
+        print("="*80)
+        
+        # Create results DataFrame
+        driver_col = 'driver_name' if 'driver_name' in df_race.columns else 'driver_name_clean'
+        team_col = 'team_name' if 'team_name' in df_race.columns else 'team'
+        grid_col = 'grid_position'
+        
+        results = pd.DataFrame({
+            'Driver': df_race[driver_col].values,
+            'Team': df_race[team_col].values if team_col in df_race.columns else ['Unknown'] * len(df_race),
+            'Grid': df_race[grid_col].values,
+            'Actual': actual,
+            'Predicted': predicted,
+            'Error': np.abs(actual - predicted)
+        })
+        
+        results = results.sort_values('Actual')
+        
+        # Highlight winner, podium, top 10
+        print("\n📊 RACE RESULTS:")
+        print("-" * 80)
+        
+        for idx, row in results.iterrows():
+            driver = row['Driver']
+            team = row['Team']
+            grid = int(row['Grid'])
+            actual_pos = int(row['Actual'])
+            pred_pos = int(row['Predicted'])
+            error = int(row['Error'])
+            
+            # Position change
+            change = grid - actual_pos
+            change_str = f"+{change}" if change > 0 else str(change)
+            
+            # Position indicator
+            if actual_pos == 1:
+                pos_icon = "🥇"
+            elif actual_pos == 2:
+                pos_icon = "🥈"
+            elif actual_pos == 3:
+                pos_icon = "🥉"
+            elif actual_pos <= 10:
+                pos_icon = "📍"
+            else:
+                pos_icon = "  "
+            
+            # Prediction accuracy
+            if error == 0:
+                acc_icon = "✓"
+            elif error <= 2:
+                acc_icon = "~"
+            else:
+                acc_icon = "✗"
+            
+            print(f"{pos_icon} P{actual_pos:2d} {acc_icon}  {driver:25s} {team:20s}  "
+                  f"Grid: P{grid:2d} ({change_str:>3s})  Predicted: P{pred_pos:2d}  Error: {error:2d}")
+        
+        # Summary metrics
+        mae = mean_absolute_error(actual, predicted)
+        exact = (np.abs(actual - predicted) < 0.5).sum() / len(actual) * 100
+        within_2 = (np.abs(actual - predicted) <= 2).sum() / len(actual) * 100
+        
+        winner_correct = (predicted[actual == 1] == 1).any()
+        podium_pred = set(results[results['Predicted'] <= 3]['Driver'].values)
+        podium_actual = set(results[results['Actual'] <= 3]['Driver'].values)
+        podium_overlap = len(podium_pred & podium_actual)
+        
+        print("\n" + "-" * 80)
+        print(f"📈 PREDICTION ACCURACY:")
+        print(f"   Mean Absolute Error: {mae:.2f} positions")
+        print(f"   Exact predictions: {exact:.1f}%")
+        print(f"   Within ±2 positions: {within_2:.1f}%")
+        print(f"   Winner predicted: {'Yes ✓' if winner_correct else 'No ✗'}")
+        print(f"   Podium overlap: {podium_overlap}/3 drivers")
         
     def predict_remaining_races(self, df_drivers, team_elos):
         """
@@ -385,7 +469,7 @@ class F1_2025_Predictor:
         print("\n📝 Run the full preprocessing pipeline on upcoming race data")
         print("   then use this script to generate predictions.")
         
-    def run_full_analysis(self):
+    def run_full_analysis(self, use_2024_proxy=False):
         """Run complete 2025 prediction and analysis workflow"""
         print("\n" + "="*80)
         print("F1 2025 SEASON PREDICTION & ANALYSIS")
@@ -397,26 +481,59 @@ class F1_2025_Predictor:
         df_2025 = self.load_2025_race_results()
         df_drivers, team_elos = self.get_driver_team_elos()
         
-        # Prepare features
-        df_2025 = self.prepare_minimal_features(df_2025, df_drivers, team_elos)
+        if use_2024_proxy:
+            print("\n" + "="*80)
+            print("USING 2024 TEST DATA AS PREDICTION PROXY")
+            print("(Demonstrating prediction capability with full features)")
+            print("="*80)
+            
+            # Load 2024 test data which has all features calculated
+            df_2025 = pd.read_csv('data/test_data_v5.csv')
+            print(f"\n  ✓ Loaded {len(df_2025)} results from 2024 test set")
+            print(f"  ✓ Using complete feature set with {len(self.feature_list)} features")
+        else:
+            # Prepare features
+            df_2025 = self.prepare_minimal_features(df_2025, df_drivers, team_elos)
         
         # Analyze each race
         print("\n" + "="*80)
-        print("ANALYZING COMPLETED 2025 RACES")
+        if use_2024_proxy:
+            print("ANALYZING 2024 TEST SET (Full Feature Prediction Example)")
+        else:
+            print("ANALYZING COMPLETED 2025 RACES")
         print("="*80)
         
         all_metrics = []
         
-        for race_name in sorted(df_2025['race_name'].unique()):
-            df_race = df_2025[df_2025['race_name'] == race_name].copy()
-            race_date = df_race['race_date'].iloc[0]
+        # Get race column name
+        race_col = 'name' if 'name' in df_2025.columns else 'race_name'
+        date_col = 'race_date' if 'race_date' in df_2025.columns else None
+        
+        for race_name in sorted(df_2025[race_col].unique()):
+            df_race = df_2025[df_2025[race_col] == race_name].copy()
+            
+            if date_col and date_col in df_race.columns:
+                race_date = pd.to_datetime(df_race[date_col].iloc[0])
+            else:
+                race_date = datetime.now()
             
             # Get predictions
             predictions = self.predict_race_positions(df_race)
-            actual = df_race['position'].values
+            
+            # Get actual positions
+            if 'position_target' in df_race.columns:
+                actual = df_race['position_target'].values
+            elif 'position' in df_race.columns:
+                actual = df_race['position'].values
+            else:
+                print(f"⚠️  No position data for {race_name}")
+                continue
             
             # Display results
-            self.display_race_prediction(race_name, race_date, df_race, actual, predictions)
+            if use_2024_proxy:
+                self.display_2024_race_prediction(race_name, race_date, df_race, actual, predictions)
+            else:
+                self.display_race_prediction(race_name, race_date, df_race, actual, predictions)
             
             # Store metrics
             metrics = self.evaluate_race_predictions(race_name, actual, predictions, df_race)
@@ -424,7 +541,10 @@ class F1_2025_Predictor:
         
         # Overall season summary
         print("\n" + "="*80)
-        print("📊 2025 SEASON PREDICTION SUMMARY")
+        if use_2024_proxy:
+            print("📊 2024 TEST SET PREDICTION SUMMARY")
+        else:
+            print("📊 2025 SEASON PREDICTION SUMMARY")
         print("="*80)
         
         df_metrics = pd.DataFrame(all_metrics)
@@ -454,7 +574,9 @@ class F1_2025_Predictor:
 def main():
     """Main prediction pipeline"""
     predictor = F1_2025_Predictor()
-    predictor.run_full_analysis()
+    
+    # Use 2024 test data with full features for better predictions
+    predictor.run_full_analysis(use_2024_proxy=True)
 
 
 if __name__ == "__main__":
