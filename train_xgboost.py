@@ -23,12 +23,12 @@ class F1XGBoostTrainer:
         """Load preprocessed training, validation, and test data"""
         print("Loading data...")
         
-        train_df = pd.read_csv('data/train_data.csv')
-        val_df = pd.read_csv('data/val_data.csv')
-        test_df = pd.read_csv('data/test_data.csv')
+        train_df = pd.read_csv('data/train_data_v5.csv', low_memory=False)
+        val_df = pd.read_csv('data/val_data_v5.csv', low_memory=False)
+        test_df = pd.read_csv('data/test_data_v5.csv', low_memory=False)
         
         # Load feature list
-        with open('data/feature_list.txt', 'r') as f:
+        with open('data/feature_list_v5.txt', 'r') as f:
             features = [line.strip() for line in f.readlines()]
         
         print(f"  ✓ Training:   {len(train_df):,} samples")
@@ -38,13 +38,13 @@ class F1XGBoostTrainer:
         
         return train_df, val_df, test_df, features
     
-    def prepare_features(self, df, features, target='position'):
+    def prepare_features(self, df, features, target='position_target'):
         """Prepare X and y from dataframe"""
         X = df[features].copy()
         y = df[target].copy()
         
         # Categorical features are already numeric IDs, just ensure they're integers
-        categorical_features = ['circuit_id', 'driver_id', 'team_id']
+        categorical_features = ['circuit_id', 'season_year']
         for cat_col in categorical_features:
             if cat_col in X.columns:
                 X[cat_col] = X[cat_col].astype(int)

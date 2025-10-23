@@ -288,10 +288,10 @@ class UltraEnhancedF1Preprocessor:
         sprints = pd.read_csv(self.archive_path + 'sprint_results.csv')
         
         # Sprint position and points
-        sprint_features = sprints[['raceId', 'driverId', 'grid', 'position', 'points']]
+        sprint_features = sprints[['raceId', 'driverId', 'grid', 'positionOrder', 'points']]
         sprint_features = sprint_features.rename(columns={
             'grid': 'sprint_grid',
-            'position': 'sprint_position',
+            'positionOrder': 'sprint_position',
             'points': 'sprint_points'
         })
         
