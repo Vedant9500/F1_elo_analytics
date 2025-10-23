@@ -1,0 +1,381 @@
+round,race_name,race_date,position,driver_number,driver_name,team,grid_position,laps,time_gap,status
+1,2025 Australian Grand Prix,Mar 16,1,Lando Norris,#4 Lando Norris,McLaren,1,57,1:42:06.304,Finished
+1,2025 Australian Grand Prix,Mar 16,2,Max Verstappen,#1 Max Verstappen,Red Bull,3,57,+0.895,Finished
+1,2025 Australian Grand Prix,Mar 16,3,George Russell,#63 George Russell,Mercedes,4,57,+8.481,Finished
+1,2025 Australian Grand Prix,Mar 16,4,Andrea Kimi Antonelli,#12 Andrea Kimi Antonelli,Mercedes,16,57,+10.135,Finished
+1,2025 Australian Grand Prix,Mar 16,5,Alexander Albon,#23 Alexander Albon,Williams,6,57,+12.773,Finished
+1,2025 Australian Grand Prix,Mar 16,6,Lance Stroll,#18 Lance Stroll,Aston Martin,13,57,+17.413,Finished
+1,2025 Australian Grand Prix,Mar 16,7,Nico Hülkenberg,#27 Nico Hülkenberg,Kick Sauber,17,57,+18.423,Finished
+1,2025 Australian Grand Prix,Mar 16,8,Charles Leclerc,#16 Charles Leclerc,Ferrari,7,57,+19.826,Finished
+1,2025 Australian Grand Prix,Mar 16,9,Oscar Piastri,#81 Oscar Piastri,McLaren,2,57,+20.448,Finished
+1,2025 Australian Grand Prix,Mar 16,10,Lewis Hamilton,#44 Lewis Hamilton,Ferrari,8,57,+22.473,Finished
+1,2025 Australian Grand Prix,Mar 16,11,Pierre Gasly,#10 Pierre Gasly,Alpine,9,57,+26.502,Finished
+1,2025 Australian Grand Prix,Mar 16,12,Yuki Tsunoda,#22 Yuki Tsunoda,RB,5,57,+29.884,Finished
+1,2025 Australian Grand Prix,Mar 16,13,Esteban Ocon,#31 Esteban Ocon,Haas,19,57,+33.161,Finished
+1,2025 Australian Grand Prix,Mar 16,14,Oliver Bearman,#87 Oliver Bearman,Haas,PL,57,+40.351,Finished
+1,2025 Australian Grand Prix,Mar 16,,Liam Lawson,#30 Liam Lawson,Red Bull,PL,46,Accident,Accident
+1,2025 Australian Grand Prix,Mar 16,,Gabriel Bortoleto,#5 Gabriel Bortoleto,Kick Sauber,15,45,Accident,Accident
+1,2025 Australian Grand Prix,Mar 16,,Fernando Alonso,#14 Fernando Alonso,Aston Martin,12,32,Accident,Accident
+1,2025 Australian Grand Prix,Mar 16,,Carlos Sainz Jr.,#55 Carlos Sainz Jr.,Williams,10,0,Accident,Accident
+1,2025 Australian Grand Prix,Mar 16,,Jack Doohan,#7 Jack Doohan,Alpine,14,0,Accident,Accident
+1,2025 Australian Grand Prix,Mar 16,,Isack Hadjar,#6 Isack Hadjar,RB,11,0,Accident on formation lap,Did not start
+2,2025 Chinese Grand Prix,Mar 23,1,Oscar Piastri,#81 Oscar Piastri,McLaren,1,56,1:30:55.026,Finished
+2,2025 Chinese Grand Prix,Mar 23,2,Lando Norris,#4 Lando Norris,McLaren,3,56,+9.748,Finished
+2,2025 Chinese Grand Prix,Mar 23,3,George Russell,#63 George Russell,Mercedes,2,56,+11.097,Finished
+2,2025 Chinese Grand Prix,Mar 23,4,Max Verstappen,#1 Max Verstappen,Red Bull,4,56,+16.656,Finished
+2,2025 Chinese Grand Prix,Mar 23,5,Esteban Ocon,#31 Esteban Ocon,Haas,11,56,+49.969,Finished
+2,2025 Chinese Grand Prix,Mar 23,6,Andrea Kimi Antonelli,#12 Andrea Kimi Antonelli,Mercedes,8,56,+53.748,Finished
+2,2025 Chinese Grand Prix,Mar 23,7,Alexander Albon,#23 Alexander Albon,Williams,10,56,+56.321,Finished
+2,2025 Chinese Grand Prix,Mar 23,8,Oliver Bearman,#87 Oliver Bearman,Haas,17,56,+1:01.303,Finished
+2,2025 Chinese Grand Prix,Mar 23,9,Lance Stroll,#18 Lance Stroll,Aston Martin,14,56,+1:10.204,Finished
+2,2025 Chinese Grand Prix,Mar 23,10,Carlos Sainz Jr.,#55 Carlos Sainz Jr.,Williams,15,56,+1:16.387,Finished
+2,2025 Chinese Grand Prix,Mar 23,11,Isack Hadjar,#6 Isack Hadjar,RB,7,56,+1:18.875,Finished
+2,2025 Chinese Grand Prix,Mar 23,12,Liam Lawson,#30 Liam Lawson,Red Bull,PL,56,+1:21.147,Finished
+2,2025 Chinese Grand Prix,Mar 23,13,Jack Doohan,#7 Jack Doohan,Alpine,18,56,+1:28.401,Finished
+2,2025 Chinese Grand Prix,Mar 23,14,Gabriel Bortoleto,#5 Gabriel Bortoleto,Kick Sauber,19,55,+1 lap,Finished
+2,2025 Chinese Grand Prix,Mar 23,15,Nico Hülkenberg,#27 Nico Hülkenberg,Kick Sauber,12,55,+1 lap,Finished
+2,2025 Chinese Grand Prix,Mar 23,16,Yuki Tsunoda,#22 Yuki Tsunoda,RB,9,55,+1 lap,Finished
+2,2025 Chinese Grand Prix,Mar 23,,Fernando Alonso,#14 Fernando Alonso,Aston Martin,13,4,Brakes,Brakes
+2,2025 Chinese Grand Prix,Mar 23,,Charles Leclerc,#16 Charles Leclerc,Ferrari,6,56,Car underweight,Disqualified
+2,2025 Chinese Grand Prix,Mar 23,,Lewis Hamilton,#44 Lewis Hamilton,Ferrari,5,56,Illegal skid block wear,Disqualified
+2,2025 Chinese Grand Prix,Mar 23,,Pierre Gasly,#10 Pierre Gasly,Alpine,16,56,Car underweight,Disqualified
+3,2025 Japanese Grand Prix,Apr 6,1,Max Verstappen,#1 Max Verstappen,Red Bull,1,53,1:22:06.983,Finished
+3,2025 Japanese Grand Prix,Apr 6,2,Lando Norris,#4 Lando Norris,McLaren,2,53,+1.423,Finished
+3,2025 Japanese Grand Prix,Apr 6,3,Oscar Piastri,#81 Oscar Piastri,McLaren,3,53,+2.129,Finished
+3,2025 Japanese Grand Prix,Apr 6,4,Charles Leclerc,#16 Charles Leclerc,Ferrari,4,53,+16.097,Finished
+3,2025 Japanese Grand Prix,Apr 6,5,George Russell,#63 George Russell,Mercedes,5,53,+17.362,Finished
+3,2025 Japanese Grand Prix,Apr 6,6,Andrea Kimi Antonelli,#12 Andrea Kimi Antonelli,Mercedes,6,53,+18.671,Finished
+3,2025 Japanese Grand Prix,Apr 6,7,Lewis Hamilton,#44 Lewis Hamilton,Ferrari,8,53,+29.182,Finished
+3,2025 Japanese Grand Prix,Apr 6,8,Isack Hadjar,#6 Isack Hadjar,RB,7,53,+37.134,Finished
+3,2025 Japanese Grand Prix,Apr 6,9,Alexander Albon,#23 Alexander Albon,Williams,9,53,+40.367,Finished
+3,2025 Japanese Grand Prix,Apr 6,10,Oliver Bearman,#87 Oliver Bearman,Haas,10,53,+54.529,Finished
+3,2025 Japanese Grand Prix,Apr 6,11,Fernando Alonso,#14 Fernando Alonso,Aston Martin,12,53,+57.333,Finished
+3,2025 Japanese Grand Prix,Apr 6,12,Yuki Tsunoda,#22 Yuki Tsunoda,Red Bull,14,53,+58.401,Finished
+3,2025 Japanese Grand Prix,Apr 6,13,Pierre Gasly,#10 Pierre Gasly,Alpine,11,53,+1:02.122,Finished
+3,2025 Japanese Grand Prix,Apr 6,14,Carlos Sainz Jr.,#55 Carlos Sainz Jr.,Williams,15,53,+1:14.129,Finished
+3,2025 Japanese Grand Prix,Apr 6,15,Jack Doohan,#7 Jack Doohan,Alpine,19,53,+1:21.314,Finished
+3,2025 Japanese Grand Prix,Apr 6,16,Nico Hülkenberg,#27 Nico Hülkenberg,Kick Sauber,16,53,+1:21.957,Finished
+3,2025 Japanese Grand Prix,Apr 6,17,Liam Lawson,#30 Liam Lawson,RB,13,53,+1:22.734,Finished
+3,2025 Japanese Grand Prix,Apr 6,18,Esteban Ocon,#31 Esteban Ocon,Haas,18,53,+1:23.438,Finished
+3,2025 Japanese Grand Prix,Apr 6,19,Gabriel Bortoleto,#5 Gabriel Bortoleto,Kick Sauber,17,53,+1:23.897,Finished
+3,2025 Japanese Grand Prix,Apr 6,20,Lance Stroll,#18 Lance Stroll,Aston Martin,20,52,+1 lap,Finished
+4,2025 Bahrain Grand Prix,Apr 13,1,Oscar Piastri,#81 Oscar Piastri,McLaren,1,57,1:35:39.435,Finished
+4,2025 Bahrain Grand Prix,Apr 13,2,George Russell,#63 George Russell,Mercedes,3,57,+15.499,Finished
+4,2025 Bahrain Grand Prix,Apr 13,3,Lando Norris,#4 Lando Norris,McLaren,6,57,+16.273,Finished
+4,2025 Bahrain Grand Prix,Apr 13,4,Charles Leclerc,#16 Charles Leclerc,Ferrari,2,57,+19.679,Finished
+4,2025 Bahrain Grand Prix,Apr 13,5,Lewis Hamilton,#44 Lewis Hamilton,Ferrari,9,57,+27.993,Finished
+4,2025 Bahrain Grand Prix,Apr 13,6,Max Verstappen,#1 Max Verstappen,Red Bull,7,57,+34.395,Finished
+4,2025 Bahrain Grand Prix,Apr 13,7,Pierre Gasly,#10 Pierre Gasly,Alpine,4,57,+36.002,Finished
+4,2025 Bahrain Grand Prix,Apr 13,8,Esteban Ocon,#31 Esteban Ocon,Haas,14,57,+44.244,Finished
+4,2025 Bahrain Grand Prix,Apr 13,9,Yuki Tsunoda,#22 Yuki Tsunoda,Red Bull,10,57,+45.061,Finished
+4,2025 Bahrain Grand Prix,Apr 13,10,Oliver Bearman,#87 Oliver Bearman,Haas,20,57,+47.594,Finished
+4,2025 Bahrain Grand Prix,Apr 13,11,Andrea Kimi Antonelli,#12 Andrea Kimi Antonelli,Mercedes,5,57,+48.016,Finished
+4,2025 Bahrain Grand Prix,Apr 13,12,Alexander Albon,#23 Alexander Albon,Williams,15,57,+48.839,Finished
+4,2025 Bahrain Grand Prix,Apr 13,13,Isack Hadjar,#6 Isack Hadjar,RB,12,57,+56.314,Finished
+4,2025 Bahrain Grand Prix,Apr 13,14,Jack Doohan,#7 Jack Doohan,Alpine,11,57,+57.806,Finished
+4,2025 Bahrain Grand Prix,Apr 13,15,Fernando Alonso,#14 Fernando Alonso,Aston Martin,13,57,+1:00.340,Finished
+4,2025 Bahrain Grand Prix,Apr 13,16,Liam Lawson,#30 Liam Lawson,RB,17,57,+1:04.435,Finished
+4,2025 Bahrain Grand Prix,Apr 13,17,Lance Stroll,#18 Lance Stroll,Aston Martin,19,57,+1:05.489,Finished
+4,2025 Bahrain Grand Prix,Apr 13,18,Gabriel Bortoleto,#5 Gabriel Bortoleto,Kick Sauber,18,57,+1:06.872,Finished
+4,2025 Bahrain Grand Prix,Apr 13,,Carlos Sainz Jr.,#55 Carlos Sainz Jr.,Williams,8,45,Collision damage,Collision damage
+4,2025 Bahrain Grand Prix,Apr 13,,Nico Hülkenberg,#27 Nico Hülkenberg,Kick Sauber,16,,Illegal skid block wear,Disqualified
+5,2025 Saudi Arabian Grand Prix,Apr 20,1,Oscar Piastri,#81 Oscar Piastri,McLaren,2,50,1:21:06.758,Finished
+5,2025 Saudi Arabian Grand Prix,Apr 20,2,Max Verstappen,#1 Max Verstappen,Red Bull,1,50,+2.843,Finished
+5,2025 Saudi Arabian Grand Prix,Apr 20,3,Charles Leclerc,#16 Charles Leclerc,Ferrari,4,50,+8.104,Finished
+5,2025 Saudi Arabian Grand Prix,Apr 20,4,Lando Norris,#4 Lando Norris,McLaren,10,50,+9.196,Finished
+5,2025 Saudi Arabian Grand Prix,Apr 20,5,George Russell,#63 George Russell,Mercedes,3,50,+27.236,Finished
+5,2025 Saudi Arabian Grand Prix,Apr 20,6,Andrea Kimi Antonelli,#12 Andrea Kimi Antonelli,Mercedes,5,50,+34.688,Finished
+5,2025 Saudi Arabian Grand Prix,Apr 20,7,Lewis Hamilton,#44 Lewis Hamilton,Ferrari,7,50,+39.073,Finished
+5,2025 Saudi Arabian Grand Prix,Apr 20,8,Carlos Sainz Jr.,#55 Carlos Sainz Jr.,Williams,6,50,+1:04.630,Finished
+5,2025 Saudi Arabian Grand Prix,Apr 20,9,Alexander Albon,#23 Alexander Albon,Williams,11,50,+1:06.515,Finished
+5,2025 Saudi Arabian Grand Prix,Apr 20,10,Isack Hadjar,#6 Isack Hadjar,RB,14,50,+1:07.091,Finished
+5,2025 Saudi Arabian Grand Prix,Apr 20,11,Fernando Alonso,#14 Fernando Alonso,Aston Martin,13,50,+1:15.917,Finished
+5,2025 Saudi Arabian Grand Prix,Apr 20,12,Liam Lawson,#30 Liam Lawson,RB,12,50,+1:18.451,Finished
+5,2025 Saudi Arabian Grand Prix,Apr 20,13,Oliver Bearman,#87 Oliver Bearman,Haas,15,50,+1:19.194,Finished
+5,2025 Saudi Arabian Grand Prix,Apr 20,14,Esteban Ocon,#31 Esteban Ocon,Haas,19,50,+1:39.723,Finished
+5,2025 Saudi Arabian Grand Prix,Apr 20,15,Nico Hülkenberg,#27 Nico Hülkenberg,Kick Sauber,18,49,+1 lap,Finished
+5,2025 Saudi Arabian Grand Prix,Apr 20,16,Lance Stroll,#18 Lance Stroll,Aston Martin,16,49,+1 lap,Finished
+5,2025 Saudi Arabian Grand Prix,Apr 20,17,Jack Doohan,#7 Jack Doohan,Alpine,17,49,+1 lap,Finished
+5,2025 Saudi Arabian Grand Prix,Apr 20,18,Gabriel Bortoleto,#5 Gabriel Bortoleto,Kick Sauber,20,49,+1 lap,Finished
+5,2025 Saudi Arabian Grand Prix,Apr 20,,Yuki Tsunoda,#22 Yuki Tsunoda,Red Bull,8,1,Collision damage,Collision damage
+5,2025 Saudi Arabian Grand Prix,Apr 20,,Pierre Gasly,#10 Pierre Gasly,Alpine,9,0,Collision,Collision
+6,2025 Miami Grand Prix,May 4,1,Oscar Piastri,#81 Oscar Piastri,McLaren,4,57,1:28:51.587,Finished
+6,2025 Miami Grand Prix,May 4,2,Lando Norris,#4 Lando Norris,McLaren,2,57,+4.630,Finished
+6,2025 Miami Grand Prix,May 4,3,George Russell,#63 George Russell,Mercedes,5,57,+37.644,Finished
+6,2025 Miami Grand Prix,May 4,4,Max Verstappen,#1 Max Verstappen,Red Bull,1,57,+39.956,Finished
+6,2025 Miami Grand Prix,May 4,5,Alexander Albon,#23 Alexander Albon,Williams,7,57,+48.067,Finished
+6,2025 Miami Grand Prix,May 4,6,Andrea Kimi Antonelli,#12 Andrea Kimi Antonelli,Mercedes,3,57,+55.502,Finished
+6,2025 Miami Grand Prix,May 4,7,Charles Leclerc,#16 Charles Leclerc,Ferrari,8,57,+57.036,Finished
+6,2025 Miami Grand Prix,May 4,8,Lewis Hamilton,#44 Lewis Hamilton,Ferrari,12,57,+1:00.186,Finished
+6,2025 Miami Grand Prix,May 4,9,Carlos Sainz Jr.,#55 Carlos Sainz Jr.,Williams,6,57,+1:00.577,Finished
+6,2025 Miami Grand Prix,May 4,10,Yuki Tsunoda,#22 Yuki Tsunoda,Red Bull,10,57,+1:14.434,Finished
+6,2025 Miami Grand Prix,May 4,11,Isack Hadjar,#6 Isack Hadjar,RB,11,57,+1:14.602,Finished
+6,2025 Miami Grand Prix,May 4,12,Esteban Ocon,#31 Esteban Ocon,Haas,9,57,+1:22.006,Finished
+6,2025 Miami Grand Prix,May 4,13,Pierre Gasly,#10 Pierre Gasly,Alpine,PL,57,+1:30.445,Finished
+6,2025 Miami Grand Prix,May 4,14,Nico Hülkenberg,#27 Nico Hülkenberg,Kick Sauber,16,56,+1 lap,Finished
+6,2025 Miami Grand Prix,May 4,15,Fernando Alonso,#14 Fernando Alonso,Aston Martin,17,56,+1 lap,Finished
+6,2025 Miami Grand Prix,May 4,16,Lance Stroll,#18 Lance Stroll,Aston Martin,18,56,+1 lap,Finished
+6,2025 Miami Grand Prix,May 4,,Liam Lawson,#30 Liam Lawson,RB,15,36,Collision damage,Collision damage
+6,2025 Miami Grand Prix,May 4,,Gabriel Bortoleto,#5 Gabriel Bortoleto,Kick Sauber,13,30,Engine,Engine
+6,2025 Miami Grand Prix,May 4,,Oliver Bearman,#87 Oliver Bearman,Haas,19,27,Engine,Engine
+6,2025 Miami Grand Prix,May 4,,Jack Doohan,#7 Jack Doohan,Alpine,14,0,Puncture,Puncture
+7,2025 Emilia Romagna Grand Prix,May 18,1,Max Verstappen,#1 Max Verstappen,Red Bull,2,63,1:31:33.199,Finished
+7,2025 Emilia Romagna Grand Prix,May 18,2,Lando Norris,#4 Lando Norris,McLaren,4,63,+6.109,Finished
+7,2025 Emilia Romagna Grand Prix,May 18,3,Oscar Piastri,#81 Oscar Piastri,McLaren,1,63,+12.956,Finished
+7,2025 Emilia Romagna Grand Prix,May 18,4,Lewis Hamilton,#44 Lewis Hamilton,Ferrari,12,63,+14.356,Finished
+7,2025 Emilia Romagna Grand Prix,May 18,5,Alexander Albon,#23 Alexander Albon,Williams,7,63,+17.945,Finished
+7,2025 Emilia Romagna Grand Prix,May 18,6,Charles Leclerc,#16 Charles Leclerc,Ferrari,11,63,+20.774,Finished
+7,2025 Emilia Romagna Grand Prix,May 18,7,George Russell,#63 George Russell,Mercedes,3,63,+22.034,Finished
+7,2025 Emilia Romagna Grand Prix,May 18,8,Carlos Sainz Jr.,#55 Carlos Sainz Jr.,Williams,6,63,+22.898,Finished
+7,2025 Emilia Romagna Grand Prix,May 18,9,Isack Hadjar,#6 Isack Hadjar,RB,9,63,+23.586,Finished
+7,2025 Emilia Romagna Grand Prix,May 18,10,Yuki Tsunoda,#22 Yuki Tsunoda,Red Bull,PL,63,+26.446,Finished
+7,2025 Emilia Romagna Grand Prix,May 18,11,Fernando Alonso,#14 Fernando Alonso,Aston Martin,5,63,+27.250,Finished
+7,2025 Emilia Romagna Grand Prix,May 18,12,Nico Hülkenberg,#27 Nico Hülkenberg,Kick Sauber,17,63,+30.296,Finished
+7,2025 Emilia Romagna Grand Prix,May 18,13,Pierre Gasly,#10 Pierre Gasly,Alpine,10,63,+31.424,Finished
+7,2025 Emilia Romagna Grand Prix,May 18,14,Liam Lawson,#30 Liam Lawson,RB,15,63,+32.511,Finished
+7,2025 Emilia Romagna Grand Prix,May 18,15,Lance Stroll,#18 Lance Stroll,Aston Martin,8,63,+32.993,Finished
+7,2025 Emilia Romagna Grand Prix,May 18,16,Franco Colapinto,#43 Franco Colapinto,Alpine,16,63,+33.411,Finished
+7,2025 Emilia Romagna Grand Prix,May 18,17,Oliver Bearman,#87 Oliver Bearman,Haas,19,63,+33.808,Finished
+7,2025 Emilia Romagna Grand Prix,May 18,18,Gabriel Bortoleto,#5 Gabriel Bortoleto,Kick Sauber,14,63,+38.572,Finished
+7,2025 Emilia Romagna Grand Prix,May 18,,Andrea Kimi Antonelli,#12 Andrea Kimi Antonelli,Mercedes,13,44,Throttle,Throttle
+7,2025 Emilia Romagna Grand Prix,May 18,,Esteban Ocon,#31 Esteban Ocon,Haas,18,27,Engine,Engine
+8,2025 Monaco Grand Prix,May 25,1,Lando Norris,#4 Lando Norris,McLaren,1,78,1:40:33.843,Finished
+8,2025 Monaco Grand Prix,May 25,2,Charles Leclerc,#16 Charles Leclerc,Ferrari,2,78,+3.131,Finished
+8,2025 Monaco Grand Prix,May 25,3,Oscar Piastri,#81 Oscar Piastri,McLaren,3,78,+3.658,Finished
+8,2025 Monaco Grand Prix,May 25,4,Max Verstappen,#1 Max Verstappen,Red Bull,4,78,+20.572,Finished
+8,2025 Monaco Grand Prix,May 25,5,Lewis Hamilton,#44 Lewis Hamilton,Ferrari,7,78,+51.387,Finished
+8,2025 Monaco Grand Prix,May 25,6,Isack Hadjar,#6 Isack Hadjar,RB,5,77,+1 lap,Finished
+8,2025 Monaco Grand Prix,May 25,7,Esteban Ocon,#31 Esteban Ocon,Haas,8,77,+1 lap,Finished
+8,2025 Monaco Grand Prix,May 25,8,Liam Lawson,#30 Liam Lawson,RB,9,77,+1 lap,Finished
+8,2025 Monaco Grand Prix,May 25,9,Alexander Albon,#23 Alexander Albon,Williams,10,76,+2 laps,Finished
+8,2025 Monaco Grand Prix,May 25,10,Carlos Sainz Jr.,#55 Carlos Sainz Jr.,Williams,11,76,+2 laps,Finished
+8,2025 Monaco Grand Prix,May 25,11,George Russell,#63 George Russell,Mercedes,14,76,+2 laps,Finished
+8,2025 Monaco Grand Prix,May 25,12,Oliver Bearman,#87 Oliver Bearman,Haas,20,76,+2 laps,Finished
+8,2025 Monaco Grand Prix,May 25,13,Franco Colapinto,#43 Franco Colapinto,Alpine,18,76,+2 laps,Finished
+8,2025 Monaco Grand Prix,May 25,14,Gabriel Bortoleto,#5 Gabriel Bortoleto,Kick Sauber,16,76,+2 laps,Finished
+8,2025 Monaco Grand Prix,May 25,15,Lance Stroll,#18 Lance Stroll,Aston Martin,19,76,+2 laps,Finished
+8,2025 Monaco Grand Prix,May 25,16,Nico Hülkenberg,#27 Nico Hülkenberg,Kick Sauber,13,76,+2 laps,Finished
+8,2025 Monaco Grand Prix,May 25,17,Yuki Tsunoda,#22 Yuki Tsunoda,Red Bull,12,76,+2 laps,Finished
+8,2025 Monaco Grand Prix,May 25,18,Andrea Kimi Antonelli,#12 Andrea Kimi Antonelli,Mercedes,15,75,+3 laps,Finished
+8,2025 Monaco Grand Prix,May 25,,Fernando Alonso,#14 Fernando Alonso,Aston Martin,6,36,Engine,Engine
+8,2025 Monaco Grand Prix,May 25,,Pierre Gasly,#10 Pierre Gasly,Alpine,17,7,Collision damage,Collision damage
+9,2025 Spanish Grand Prix,Jun 1,1,Oscar Piastri,#81 Oscar Piastri,McLaren,1,66,1:32:57.375,Finished
+9,2025 Spanish Grand Prix,Jun 1,2,Lando Norris,#4 Lando Norris,McLaren,2,66,+2.471,Finished
+9,2025 Spanish Grand Prix,Jun 1,3,Charles Leclerc,#16 Charles Leclerc,Ferrari,7,66,+10.455,Finished
+9,2025 Spanish Grand Prix,Jun 1,4,George Russell,#63 George Russell,Mercedes,4,66,+11.359,Finished
+9,2025 Spanish Grand Prix,Jun 1,5,Nico Hülkenberg,#27 Nico Hülkenberg,Kick Sauber,15,66,+13.648,Finished
+9,2025 Spanish Grand Prix,Jun 1,6,Lewis Hamilton,#44 Lewis Hamilton,Ferrari,5,66,+15.508,Finished
+9,2025 Spanish Grand Prix,Jun 1,7,Isack Hadjar,#6 Isack Hadjar,RB,9,66,+16.022,Finished
+9,2025 Spanish Grand Prix,Jun 1,8,Pierre Gasly,#10 Pierre Gasly,Alpine,8,66,+17.882,Finished
+9,2025 Spanish Grand Prix,Jun 1,9,Fernando Alonso,#14 Fernando Alonso,Aston Martin,10,66,+21.564,Finished
+9,2025 Spanish Grand Prix,Jun 1,10,Max Verstappen,#1 Max Verstappen,Red Bull,3,66,+21.826,Finished
+9,2025 Spanish Grand Prix,Jun 1,11,Liam Lawson,#30 Liam Lawson,RB,13,66,+25.532,Finished
+9,2025 Spanish Grand Prix,Jun 1,12,Gabriel Bortoleto,#5 Gabriel Bortoleto,Kick Sauber,12,66,+25.996,Finished
+9,2025 Spanish Grand Prix,Jun 1,13,Yuki Tsunoda,#22 Yuki Tsunoda,Red Bull,PL,66,+28.822,Finished
+9,2025 Spanish Grand Prix,Jun 1,14,Carlos Sainz Jr.,#55 Carlos Sainz Jr.,Williams,17,66,+29.309,Finished
+9,2025 Spanish Grand Prix,Jun 1,15,Franco Colapinto,#43 Franco Colapinto,Alpine,18,66,+31.381,Finished
+9,2025 Spanish Grand Prix,Jun 1,16,Esteban Ocon,#31 Esteban Ocon,Haas,16,66,+32.197,Finished
+9,2025 Spanish Grand Prix,Jun 1,17,Oliver Bearman,#87 Oliver Bearman,Haas,14,66,+37.065,Finished
+9,2025 Spanish Grand Prix,Jun 1,,Andrea Kimi Antonelli,#12 Andrea Kimi Antonelli,Mercedes,6,53,,Retired
+9,2025 Spanish Grand Prix,Jun 1,,Alexander Albon,#23 Alexander Albon,Williams,11,27,,Retired
+9,2025 Spanish Grand Prix,Jun 1,,Lance Stroll,#18 Lance Stroll,Aston Martin,,,Injury,Did not start
+10,2025 Canadian Grand Prix,Jun 15,1,George Russell,#63 George Russell,Mercedes,1,70,1:31:52.688,Finished
+10,2025 Canadian Grand Prix,Jun 15,2,Max Verstappen,#1 Max Verstappen,Red Bull,2,70,+0.228,Finished
+10,2025 Canadian Grand Prix,Jun 15,3,Andrea Kimi Antonelli,#12 Andrea Kimi Antonelli,Mercedes,4,70,+1.014,Finished
+10,2025 Canadian Grand Prix,Jun 15,4,Oscar Piastri,#81 Oscar Piastri,McLaren,3,70,+2.109,Finished
+10,2025 Canadian Grand Prix,Jun 15,5,Charles Leclerc,#16 Charles Leclerc,Ferrari,8,70,+3.442,Finished
+10,2025 Canadian Grand Prix,Jun 15,6,Lewis Hamilton,#44 Lewis Hamilton,Ferrari,5,70,+10.713,Finished
+10,2025 Canadian Grand Prix,Jun 15,7,Fernando Alonso,#14 Fernando Alonso,Aston Martin,6,70,+10.972,Finished
+10,2025 Canadian Grand Prix,Jun 15,8,Nico Hülkenberg,#27 Nico Hülkenberg,Kick Sauber,11,70,+15.364,Finished
+10,2025 Canadian Grand Prix,Jun 15,9,Esteban Ocon,#31 Esteban Ocon,Haas,14,69,+1 lap,Finished
+10,2025 Canadian Grand Prix,Jun 15,10,Carlos Sainz Jr.,#55 Carlos Sainz Jr.,Williams,16,69,+1 lap,Finished
+10,2025 Canadian Grand Prix,Jun 15,11,Oliver Bearman,#87 Oliver Bearman,Haas,13,69,+1 lap,Finished
+10,2025 Canadian Grand Prix,Jun 15,12,Yuki Tsunoda,#22 Yuki Tsunoda,Red Bull,18,69,+1 lap,Finished
+10,2025 Canadian Grand Prix,Jun 15,13,Franco Colapinto,#43 Franco Colapinto,Alpine,10,69,+1 lap,Finished
+10,2025 Canadian Grand Prix,Jun 15,14,Gabriel Bortoleto,#5 Gabriel Bortoleto,Kick Sauber,15,69,+1 lap,Finished
+10,2025 Canadian Grand Prix,Jun 15,15,Pierre Gasly,#10 Pierre Gasly,Alpine,PL,69,+1 lap,Finished
+10,2025 Canadian Grand Prix,Jun 15,16,Isack Hadjar,#6 Isack Hadjar,RB,12,69,+1 lap,Finished
+10,2025 Canadian Grand Prix,Jun 15,17,Lance Stroll,#18 Lance Stroll,Aston Martin,17,69,+1 lap,Finished
+10,2025 Canadian Grand Prix,Jun 15,18,Lando Norris,#4 Lando Norris,McLaren,7,66,Collision,Finished
+10,2025 Canadian Grand Prix,Jun 15,,Liam Lawson,#30 Liam Lawson,RB,PL,53,Overheating,Overheating
+10,2025 Canadian Grand Prix,Jun 15,,Alexander Albon,#23 Alexander Albon,Williams,9,46,Engine,Engine
+11,2025 Austrian Grand Prix,Jun 29,1,Lando Norris,#4 Lando Norris,McLaren,1,70,1:23:47.693,Finished
+11,2025 Austrian Grand Prix,Jun 29,2,Oscar Piastri,#81 Oscar Piastri,McLaren,3,70,+2.695,Finished
+11,2025 Austrian Grand Prix,Jun 29,3,Charles Leclerc,#16 Charles Leclerc,Ferrari,2,70,+19.820,Finished
+11,2025 Austrian Grand Prix,Jun 29,4,Lewis Hamilton,#44 Lewis Hamilton,Ferrari,4,70,+29.020,Finished
+11,2025 Austrian Grand Prix,Jun 29,5,George Russell,#63 George Russell,Mercedes,5,70,+1:02.396,Finished
+11,2025 Austrian Grand Prix,Jun 29,6,Liam Lawson,#30 Liam Lawson,RB,6,70,+1:07.754,Finished
+11,2025 Austrian Grand Prix,Jun 29,7,Fernando Alonso,#14 Fernando Alonso,Aston Martin,11,69,+1 lap,Finished
+11,2025 Austrian Grand Prix,Jun 29,8,Gabriel Bortoleto,#5 Gabriel Bortoleto,Kick Sauber,8,69,+1 lap,Finished
+11,2025 Austrian Grand Prix,Jun 29,9,Nico Hülkenberg,#27 Nico Hülkenberg,Kick Sauber,20,69,+1 lap,Finished
+11,2025 Austrian Grand Prix,Jun 29,10,Esteban Ocon,#31 Esteban Ocon,Haas,17,69,+1 lap,Finished
+11,2025 Austrian Grand Prix,Jun 29,11,Oliver Bearman,#87 Oliver Bearman,Haas,15,69,+1 lap,Finished
+11,2025 Austrian Grand Prix,Jun 29,12,Isack Hadjar,#6 Isack Hadjar,RB,13,69,+1 lap,Finished
+11,2025 Austrian Grand Prix,Jun 29,13,Pierre Gasly,#10 Pierre Gasly,Alpine,10,69,+1 lap,Finished
+11,2025 Austrian Grand Prix,Jun 29,14,Lance Stroll,#18 Lance Stroll,Aston Martin,16,69,+1 lap,Finished
+11,2025 Austrian Grand Prix,Jun 29,15,Franco Colapinto,#43 Franco Colapinto,Alpine,14,69,+1 lap,Finished
+11,2025 Austrian Grand Prix,Jun 29,16,Yuki Tsunoda,#22 Yuki Tsunoda,Red Bull,18,68,+2 laps,Finished
+11,2025 Austrian Grand Prix,Jun 29,,Alexander Albon,#23 Alexander Albon,Williams,12,15,Engine,Engine
+11,2025 Austrian Grand Prix,Jun 29,,Max Verstappen,#1 Max Verstappen,Red Bull,7,0,Collision,Collision
+11,2025 Austrian Grand Prix,Jun 29,,Andrea Kimi Antonelli,#12 Andrea Kimi Antonelli,Mercedes,9,0,Collision,Collision
+11,2025 Austrian Grand Prix,Jun 29,,Carlos Sainz Jr.,#55 Carlos Sainz Jr.,Williams,,,Brakes,Did not start
+12,2025 British Grand Prix,Jul 6,1,Lando Norris,#4 Lando Norris,McLaren,3,52,1:37:15.735,Finished
+12,2025 British Grand Prix,Jul 6,2,Oscar Piastri,#81 Oscar Piastri,McLaren,2,52,+6.812,Finished
+12,2025 British Grand Prix,Jul 6,3,Nico Hülkenberg,#27 Nico Hülkenberg,Kick Sauber,19,52,+34.742,Finished
+12,2025 British Grand Prix,Jul 6,4,Lewis Hamilton,#44 Lewis Hamilton,Ferrari,5,52,+39.812,Finished
+12,2025 British Grand Prix,Jul 6,5,Max Verstappen,#1 Max Verstappen,Red Bull,1,52,+56.781,Finished
+12,2025 British Grand Prix,Jul 6,6,Pierre Gasly,#10 Pierre Gasly,Alpine,8,52,+59.857,Finished
+12,2025 British Grand Prix,Jul 6,7,Lance Stroll,#18 Lance Stroll,Aston Martin,17,52,+1:00.603,Finished
+12,2025 British Grand Prix,Jul 6,8,Alexander Albon,#23 Alexander Albon,Williams,13,52,+1:04.135,Finished
+12,2025 British Grand Prix,Jul 6,9,Fernando Alonso,#14 Fernando Alonso,Aston Martin,7,52,+1:05.858,Finished
+12,2025 British Grand Prix,Jul 6,10,George Russell,#63 George Russell,Mercedes,4,52,+1:10.674,Finished
+12,2025 British Grand Prix,Jul 6,11,Oliver Bearman,#87 Oliver Bearman,Haas,18,52,+1:12.095,Finished
+12,2025 British Grand Prix,Jul 6,12,Carlos Sainz Jr.,#55 Carlos Sainz Jr.,Williams,9,52,+1:16.592,Finished
+12,2025 British Grand Prix,Jul 6,13,Esteban Ocon,#31 Esteban Ocon,Haas,14,52,+1:17.301,Finished
+12,2025 British Grand Prix,Jul 6,14,Charles Leclerc,#16 Charles Leclerc,Ferrari,6,52,+1:24.477,Finished
+12,2025 British Grand Prix,Jul 6,15,Yuki Tsunoda,#22 Yuki Tsunoda,Red Bull,11,51,+1 lap,Finished
+12,2025 British Grand Prix,Jul 6,,Andrea Kimi Antonelli,#12 Andrea Kimi Antonelli,Mercedes,10,23,Collision damage,Collision damage
+12,2025 British Grand Prix,Jul 6,,Isack Hadjar,#6 Isack Hadjar,RB,12,17,Collision,Collision
+12,2025 British Grand Prix,Jul 6,,Gabriel Bortoleto,#5 Gabriel Bortoleto,Kick Sauber,16,3,Accident,Accident
+12,2025 British Grand Prix,Jul 6,,Liam Lawson,#30 Liam Lawson,RB,15,0,Collision,Collision
+12,2025 British Grand Prix,Jul 6,,Franco Colapinto,#43 Franco Colapinto,Alpine,PL,,,Did not start
+13,2025 Belgian Grand Prix,Jul 27,1,Oscar Piastri,#81 Oscar Piastri,McLaren,2,44,1:25:22.601,Finished
+13,2025 Belgian Grand Prix,Jul 27,2,Lando Norris,#4 Lando Norris,McLaren,1,44,+3.415,Finished
+13,2025 Belgian Grand Prix,Jul 27,3,Charles Leclerc,#16 Charles Leclerc,Ferrari,3,44,+20.185,Finished
+13,2025 Belgian Grand Prix,Jul 27,4,Max Verstappen,#1 Max Verstappen,Red Bull,4,44,+21.731,Finished
+13,2025 Belgian Grand Prix,Jul 27,5,George Russell,#63 George Russell,Mercedes,6,44,+34.863,Finished
+13,2025 Belgian Grand Prix,Jul 27,6,Alexander Albon,#23 Alexander Albon,Williams,5,44,+39.926,Finished
+13,2025 Belgian Grand Prix,Jul 27,7,Lewis Hamilton,#44 Lewis Hamilton,Ferrari,PL,44,+40.679,Finished
+13,2025 Belgian Grand Prix,Jul 27,8,Liam Lawson,#30 Liam Lawson,RB,9,44,+52.033,Finished
+13,2025 Belgian Grand Prix,Jul 27,9,Gabriel Bortoleto,#5 Gabriel Bortoleto,Kick Sauber,10,44,+56.434,Finished
+13,2025 Belgian Grand Prix,Jul 27,10,Pierre Gasly,#10 Pierre Gasly,Alpine,13,44,+1:12.714,Finished
+13,2025 Belgian Grand Prix,Jul 27,11,Oliver Bearman,#87 Oliver Bearman,Haas,12,44,+1:13.145,Finished
+13,2025 Belgian Grand Prix,Jul 27,12,Nico Hülkenberg,#27 Nico Hülkenberg,Kick Sauber,14,44,+1:13.628,Finished
+13,2025 Belgian Grand Prix,Jul 27,13,Yuki Tsunoda,#22 Yuki Tsunoda,Red Bull,7,44,+1:15.395,Finished
+13,2025 Belgian Grand Prix,Jul 27,14,Lance Stroll,#18 Lance Stroll,Aston Martin,16,44,+1:19.831,Finished
+13,2025 Belgian Grand Prix,Jul 27,15,Esteban Ocon,#31 Esteban Ocon,Haas,11,44,+1:26.063,Finished
+13,2025 Belgian Grand Prix,Jul 27,16,Andrea Kimi Antonelli,#12 Andrea Kimi Antonelli,Mercedes,PL,44,+1:26.721,Finished
+13,2025 Belgian Grand Prix,Jul 27,17,Fernando Alonso,#14 Fernando Alonso,Aston Martin,PL,44,+1:27.924,Finished
+13,2025 Belgian Grand Prix,Jul 27,18,Carlos Sainz Jr.,#55 Carlos Sainz Jr.,Williams,PL,44,+1:32.024,Finished
+13,2025 Belgian Grand Prix,Jul 27,19,Franco Colapinto,#43 Franco Colapinto,Alpine,15,44,+1:35.250,Finished
+13,2025 Belgian Grand Prix,Jul 27,20,Isack Hadjar,#6 Isack Hadjar,RB,8,43,+1 lap,Finished
+14,2025 Hungarian Grand Prix,Aug 3,1,Lando Norris,#4 Lando Norris,McLaren,3,70,1:35:21.231,Finished
+14,2025 Hungarian Grand Prix,Aug 3,2,Oscar Piastri,#81 Oscar Piastri,McLaren,2,70,+0.698,Finished
+14,2025 Hungarian Grand Prix,Aug 3,3,George Russell,#63 George Russell,Mercedes,4,70,+21.916,Finished
+14,2025 Hungarian Grand Prix,Aug 3,4,Charles Leclerc,#16 Charles Leclerc,Ferrari,1,70,+42.560,Finished
+14,2025 Hungarian Grand Prix,Aug 3,5,Fernando Alonso,#14 Fernando Alonso,Aston Martin,5,70,+59.040,Finished
+14,2025 Hungarian Grand Prix,Aug 3,6,Gabriel Bortoleto,#5 Gabriel Bortoleto,Kick Sauber,7,70,+1:06.169,Finished
+14,2025 Hungarian Grand Prix,Aug 3,7,Lance Stroll,#18 Lance Stroll,Aston Martin,6,70,+1:08.174,Finished
+14,2025 Hungarian Grand Prix,Aug 3,8,Liam Lawson,#30 Liam Lawson,RB,9,70,+1:09.451,Finished
+14,2025 Hungarian Grand Prix,Aug 3,9,Max Verstappen,#1 Max Verstappen,Red Bull,8,70,+1:12.645,Finished
+14,2025 Hungarian Grand Prix,Aug 3,10,Andrea Kimi Antonelli,#12 Andrea Kimi Antonelli,Mercedes,15,69,+1 lap,Finished
+14,2025 Hungarian Grand Prix,Aug 3,11,Isack Hadjar,#6 Isack Hadjar,RB,10,69,+1 lap,Finished
+14,2025 Hungarian Grand Prix,Aug 3,12,Lewis Hamilton,#44 Lewis Hamilton,Ferrari,12,69,+1 lap,Finished
+14,2025 Hungarian Grand Prix,Aug 3,13,Nico Hülkenberg,#27 Nico Hülkenberg,Kick Sauber,18,69,+1 lap,Finished
+14,2025 Hungarian Grand Prix,Aug 3,14,Carlos Sainz Jr.,#55 Carlos Sainz Jr.,Williams,13,69,+1 lap,Finished
+14,2025 Hungarian Grand Prix,Aug 3,15,Alexander Albon,#23 Alexander Albon,Williams,19,69,+1 lap,Finished
+14,2025 Hungarian Grand Prix,Aug 3,16,Esteban Ocon,#31 Esteban Ocon,Haas,17,69,+1 lap,Finished
+14,2025 Hungarian Grand Prix,Aug 3,17,Yuki Tsunoda,#22 Yuki Tsunoda,Red Bull,PL,69,+1 lap,Finished
+14,2025 Hungarian Grand Prix,Aug 3,18,Franco Colapinto,#43 Franco Colapinto,Alpine,14,69,+1 lap,Finished
+14,2025 Hungarian Grand Prix,Aug 3,19,Pierre Gasly,#10 Pierre Gasly,Alpine,16,69,+1 lap,Finished
+14,2025 Hungarian Grand Prix,Aug 3,,Oliver Bearman,#87 Oliver Bearman,Haas,11,48,Undertray,Undertray
+15,2025 Dutch Grand Prix,Aug 31,1,Oscar Piastri,#81 Oscar Piastri,McLaren,1,72,1:38:29.849,Finished
+15,2025 Dutch Grand Prix,Aug 31,2,Max Verstappen,#1 Max Verstappen,Red Bull,3,72,+1.271,Finished
+15,2025 Dutch Grand Prix,Aug 31,3,Isack Hadjar,#6 Isack Hadjar,RB,4,72,+3.233,Finished
+15,2025 Dutch Grand Prix,Aug 31,4,George Russell,#63 George Russell,Mercedes,5,72,+5.654,Finished
+15,2025 Dutch Grand Prix,Aug 31,5,Alexander Albon,#23 Alexander Albon,Williams,15,72,+6.327,Finished
+15,2025 Dutch Grand Prix,Aug 31,6,Oliver Bearman,#87 Oliver Bearman,Haas,PL,72,+9.044,Finished
+15,2025 Dutch Grand Prix,Aug 31,7,Lance Stroll,#18 Lance Stroll,Aston Martin,19,72,+9.497,Finished
+15,2025 Dutch Grand Prix,Aug 31,8,Fernando Alonso,#14 Fernando Alonso,Aston Martin,10,72,+11.709,Finished
+15,2025 Dutch Grand Prix,Aug 31,9,Yuki Tsunoda,#22 Yuki Tsunoda,Red Bull,12,72,+13.597,Finished
+15,2025 Dutch Grand Prix,Aug 31,10,Esteban Ocon,#31 Esteban Ocon,Haas,18,72,+14.063,Finished
+15,2025 Dutch Grand Prix,Aug 31,11,Franco Colapinto,#43 Franco Colapinto,Alpine,16,72,+14.511,Finished
+15,2025 Dutch Grand Prix,Aug 31,12,Liam Lawson,#30 Liam Lawson,RB,8,72,+17.063,Finished
+15,2025 Dutch Grand Prix,Aug 31,13,Carlos Sainz Jr.,#55 Carlos Sainz Jr.,Williams,9,72,+17.376,Finished
+15,2025 Dutch Grand Prix,Aug 31,14,Nico Hülkenberg,#27 Nico Hülkenberg,Kick Sauber,17,72,+19.725,Finished
+15,2025 Dutch Grand Prix,Aug 31,15,Gabriel Bortoleto,#5 Gabriel Bortoleto,Kick Sauber,13,72,+21.565,Finished
+15,2025 Dutch Grand Prix,Aug 31,16,Andrea Kimi Antonelli,#12 Andrea Kimi Antonelli,Mercedes,11,72,+22.029,Finished
+15,2025 Dutch Grand Prix,Aug 31,17,Pierre Gasly,#10 Pierre Gasly,Alpine,14,72,+23.629,Finished
+15,2025 Dutch Grand Prix,Aug 31,18,Lando Norris,#4 Lando Norris,McLaren,2,64,Oil leak,Finished
+15,2025 Dutch Grand Prix,Aug 31,,Charles Leclerc,#16 Charles Leclerc,Ferrari,6,52,Collision,Collision
+15,2025 Dutch Grand Prix,Aug 31,,Lewis Hamilton,#44 Lewis Hamilton,Ferrari,7,22,Accident,Accident
+16,2025 Italian Grand Prix,Sep 7,1,Max Verstappen,#1 Max Verstappen,Red Bull,1,53,1:13:24.325,Finished
+16,2025 Italian Grand Prix,Sep 7,2,Lando Norris,#4 Lando Norris,McLaren,2,53,+19.207,Finished
+16,2025 Italian Grand Prix,Sep 7,3,Oscar Piastri,#81 Oscar Piastri,McLaren,3,53,+21.351,Finished
+16,2025 Italian Grand Prix,Sep 7,4,Charles Leclerc,#16 Charles Leclerc,Ferrari,4,53,+25.624,Finished
+16,2025 Italian Grand Prix,Sep 7,5,George Russell,#63 George Russell,Mercedes,5,53,+32.881,Finished
+16,2025 Italian Grand Prix,Sep 7,6,Lewis Hamilton,#44 Lewis Hamilton,Ferrari,10,53,+37.449,Finished
+16,2025 Italian Grand Prix,Sep 7,7,Alexander Albon,#23 Alexander Albon,Williams,14,53,+50.537,Finished
+16,2025 Italian Grand Prix,Sep 7,8,Gabriel Bortoleto,#5 Gabriel Bortoleto,Kick Sauber,7,53,+58.484,Finished
+16,2025 Italian Grand Prix,Sep 7,9,Andrea Kimi Antonelli,#12 Andrea Kimi Antonelli,Mercedes,6,53,+59.762,Finished
+16,2025 Italian Grand Prix,Sep 7,10,Isack Hadjar,#6 Isack Hadjar,RB,PL,53,+1:03.891,Finished
+16,2025 Italian Grand Prix,Sep 7,11,Carlos Sainz Jr.,#55 Carlos Sainz Jr.,Williams,13,53,+1:04.469,Finished
+16,2025 Italian Grand Prix,Sep 7,12,Oliver Bearman,#87 Oliver Bearman,Haas,11,53,+1:19.288,Finished
+16,2025 Italian Grand Prix,Sep 7,13,Yuki Tsunoda,#22 Yuki Tsunoda,Red Bull,9,53,+1:20.701,Finished
+16,2025 Italian Grand Prix,Sep 7,14,Liam Lawson,#30 Liam Lawson,RB,18,53,+1:22.351,Finished
+16,2025 Italian Grand Prix,Sep 7,15,Esteban Ocon,#31 Esteban Ocon,Haas,15,52,+1 lap,Finished
+16,2025 Italian Grand Prix,Sep 7,16,Pierre Gasly,#10 Pierre Gasly,Alpine,PL,52,+1 lap,Finished
+16,2025 Italian Grand Prix,Sep 7,17,Franco Colapinto,#43 Franco Colapinto,Alpine,17,52,+1 lap,Finished
+16,2025 Italian Grand Prix,Sep 7,18,Lance Stroll,#18 Lance Stroll,Aston Martin,16,52,+1 lap,Finished
+16,2025 Italian Grand Prix,Sep 7,,Fernando Alonso,#14 Fernando Alonso,Aston Martin,8,24,Suspension,Suspension
+16,2025 Italian Grand Prix,Sep 7,,Nico Hülkenberg,#27 Nico Hülkenberg,Kick Sauber,,,Gearbox,Did not start
+17,2025 Azerbaijan Grand Prix,Sep 21,1,Max Verstappen,#1 Max Verstappen,Red Bull,1,51,1:33:26.408,Finished
+17,2025 Azerbaijan Grand Prix,Sep 21,2,George Russell,#63 George Russell,Mercedes,5,51,+14.609,Finished
+17,2025 Azerbaijan Grand Prix,Sep 21,3,Carlos Sainz Jr.,#55 Carlos Sainz Jr.,Williams,2,51,+19.199,Finished
+17,2025 Azerbaijan Grand Prix,Sep 21,4,Andrea Kimi Antonelli,#12 Andrea Kimi Antonelli,Mercedes,4,51,+21.760,Finished
+17,2025 Azerbaijan Grand Prix,Sep 21,5,Liam Lawson,#30 Liam Lawson,RB,3,51,+33.290,Finished
+17,2025 Azerbaijan Grand Prix,Sep 21,6,Yuki Tsunoda,#22 Yuki Tsunoda,Red Bull,6,51,+33.808,Finished
+17,2025 Azerbaijan Grand Prix,Sep 21,7,Lando Norris,#4 Lando Norris,McLaren,7,51,+34.227,Finished
+17,2025 Azerbaijan Grand Prix,Sep 21,8,Lewis Hamilton,#44 Lewis Hamilton,Ferrari,12,51,+36.310,Finished
+17,2025 Azerbaijan Grand Prix,Sep 21,9,Charles Leclerc,#16 Charles Leclerc,Ferrari,10,51,+36.774,Finished
+17,2025 Azerbaijan Grand Prix,Sep 21,10,Isack Hadjar,#6 Isack Hadjar,RB,8,51,+38.982,Finished
+17,2025 Azerbaijan Grand Prix,Sep 21,11,Gabriel Bortoleto,#5 Gabriel Bortoleto,Kick Sauber,13,51,+1:07.606,Finished
+17,2025 Azerbaijan Grand Prix,Sep 21,12,Oliver Bearman,#87 Oliver Bearman,Haas,15,51,+1:08.262,Finished
+17,2025 Azerbaijan Grand Prix,Sep 21,13,Alexander Albon,#23 Alexander Albon,Williams,19,51,+1:12.870,Finished
+17,2025 Azerbaijan Grand Prix,Sep 21,14,Esteban Ocon,#31 Esteban Ocon,Haas,20,51,+1:17.580,Finished
+17,2025 Azerbaijan Grand Prix,Sep 21,15,Fernando Alonso,#14 Fernando Alonso,Aston Martin,11,51,+1:18.707,Finished
+17,2025 Azerbaijan Grand Prix,Sep 21,16,Nico Hülkenberg,#27 Nico Hülkenberg,Kick Sauber,17,51,+1:20.237,Finished
+17,2025 Azerbaijan Grand Prix,Sep 21,17,Lance Stroll,#18 Lance Stroll,Aston Martin,14,51,+1:36.392,Finished
+17,2025 Azerbaijan Grand Prix,Sep 21,18,Pierre Gasly,#10 Pierre Gasly,Alpine,18,50,+1 lap,Finished
+17,2025 Azerbaijan Grand Prix,Sep 21,19,Franco Colapinto,#43 Franco Colapinto,Alpine,16,50,+1 lap,Finished
+17,2025 Azerbaijan Grand Prix,Sep 21,,Oscar Piastri,#81 Oscar Piastri,McLaren,9,0,Accident,Accident
+18,2025 Singapore Grand Prix,Oct 5,1,George Russell,#63 George Russell,Mercedes,1,62,1:40:22.367,Finished
+18,2025 Singapore Grand Prix,Oct 5,2,Max Verstappen,#1 Max Verstappen,Red Bull,2,62,+5.430,Finished
+18,2025 Singapore Grand Prix,Oct 5,3,Lando Norris,#4 Lando Norris,McLaren,5,62,+6.066,Finished
+18,2025 Singapore Grand Prix,Oct 5,4,Oscar Piastri,#81 Oscar Piastri,McLaren,3,62,+8.146,Finished
+18,2025 Singapore Grand Prix,Oct 5,5,Andrea Kimi Antonelli,#12 Andrea Kimi Antonelli,Mercedes,4,62,+33.681,Finished
+18,2025 Singapore Grand Prix,Oct 5,6,Charles Leclerc,#16 Charles Leclerc,Ferrari,7,62,+45.996,Finished
+18,2025 Singapore Grand Prix,Oct 5,7,Fernando Alonso,#14 Fernando Alonso,Aston Martin,10,62,+1:20.667,Finished
+18,2025 Singapore Grand Prix,Oct 5,8,Lewis Hamilton,#44 Lewis Hamilton,Ferrari,6,62,+1:25.667,Finished
+18,2025 Singapore Grand Prix,Oct 5,9,Oliver Bearman,#87 Oliver Bearman,Haas,9,62,+1:33.527,Finished
+18,2025 Singapore Grand Prix,Oct 5,10,Carlos Sainz Jr.,#55 Carlos Sainz Jr.,Williams,18,61,+1 lap,Finished
+18,2025 Singapore Grand Prix,Oct 5,11,Isack Hadjar,#6 Isack Hadjar,RB,8,61,+1 lap,Finished
+18,2025 Singapore Grand Prix,Oct 5,12,Yuki Tsunoda,#22 Yuki Tsunoda,Red Bull,13,61,+1 lap,Finished
+18,2025 Singapore Grand Prix,Oct 5,13,Lance Stroll,#18 Lance Stroll,Aston Martin,15,61,+1 lap,Finished
+18,2025 Singapore Grand Prix,Oct 5,14,Alexander Albon,#23 Alexander Albon,Williams,PL,61,+1 lap,Finished
+18,2025 Singapore Grand Prix,Oct 5,15,Liam Lawson,#30 Liam Lawson,RB,12,61,+1 lap,Finished
+18,2025 Singapore Grand Prix,Oct 5,16,Franco Colapinto,#43 Franco Colapinto,Alpine,16,61,+1 lap,Finished
+18,2025 Singapore Grand Prix,Oct 5,17,Gabriel Bortoleto,#5 Gabriel Bortoleto,Kick Sauber,14,61,+1 lap,Finished
+18,2025 Singapore Grand Prix,Oct 5,18,Esteban Ocon,#31 Esteban Ocon,Haas,17,61,+1 lap,Finished
+18,2025 Singapore Grand Prix,Oct 5,19,Pierre Gasly,#10 Pierre Gasly,Alpine,PL,61,+1 lap,Finished
+18,2025 Singapore Grand Prix,Oct 5,20,Nico Hülkenberg,#27 Nico Hülkenberg,Kick Sauber,11,61,+1 lap,Finished
+19,2025 United States Grand Prix,Oct 19,1,Max Verstappen,#1 Max Verstappen,Red Bull,1,56,1:34:00.161,Finished
+19,2025 United States Grand Prix,Oct 19,2,Lando Norris,#4 Lando Norris,McLaren,2,56,+7.959,Finished
+19,2025 United States Grand Prix,Oct 19,3,Charles Leclerc,#16 Charles Leclerc,Ferrari,3,56,+15.373,Finished
+19,2025 United States Grand Prix,Oct 19,4,Lewis Hamilton,#44 Lewis Hamilton,Ferrari,5,56,+28.536,Finished
+19,2025 United States Grand Prix,Oct 19,5,Oscar Piastri,#81 Oscar Piastri,McLaren,6,56,+29.678,Finished
+19,2025 United States Grand Prix,Oct 19,6,George Russell,#63 George Russell,Mercedes,4,56,+33.456,Finished
+19,2025 United States Grand Prix,Oct 19,7,Yuki Tsunoda,#22 Yuki Tsunoda,Red Bull,13,56,+52.714,Finished
+19,2025 United States Grand Prix,Oct 19,8,Nico Hülkenberg,#27 Nico Hülkenberg,Kick Sauber,11,56,+57.249,Finished
+19,2025 United States Grand Prix,Oct 19,9,Oliver Bearman,#87 Oliver Bearman,Haas,8,56,+1:04.722,Finished
+19,2025 United States Grand Prix,Oct 19,10,Fernando Alonso,#14 Fernando Alonso,Aston Martin,10,56,+1:10.001,Finished
+19,2025 United States Grand Prix,Oct 19,11,Liam Lawson,#30 Liam Lawson,RB,12,56,+1:13.209,Finished
+19,2025 United States Grand Prix,Oct 19,12,Lance Stroll,#18 Lance Stroll,Aston Martin,19,56,+1:14.778,Finished
+19,2025 United States Grand Prix,Oct 19,13,Andrea Kimi Antonelli,#12 Andrea Kimi Antonelli,Mercedes,7,56,+1:15.746,Finished
+19,2025 United States Grand Prix,Oct 19,14,Alexander Albon,#23 Alexander Albon,Williams,18,56,+1:20.000,Finished
+19,2025 United States Grand Prix,Oct 19,15,Esteban Ocon,#31 Esteban Ocon,Haas,17,56,+1:23.043,Finished
+19,2025 United States Grand Prix,Oct 19,16,Isack Hadjar,#6 Isack Hadjar,RB,20,56,+1:32.807,Finished
+19,2025 United States Grand Prix,Oct 19,17,Franco Colapinto,#43 Franco Colapinto,Alpine,15,55,+1 lap,Finished
+19,2025 United States Grand Prix,Oct 19,18,Gabriel Bortoleto,#5 Gabriel Bortoleto,Kick Sauber,16,55,+1 lap,Finished
+19,2025 United States Grand Prix,Oct 19,19,Pierre Gasly,#10 Pierre Gasly,Alpine,14,55,+1 lap,Finished
+19,2025 United States Grand Prix,Oct 19,,Carlos Sainz Jr.,#55 Carlos Sainz Jr.,Williams,9,5,Collision,Collision
