@@ -11,11 +11,7 @@ from datetime import datetime
 
 # Configuration
 CSV_DIR = Path('d:/f1-elo/archive')
-DB_PATH = 'd:/f1-elo/DB/f1_database.db'  # For SQLite
-
-# For MySQL/PostgreSQL, use connection string instead:
-# CONNECTION_STRING = "mysql+pymysql://user:password@localhost/f1_db"
-# CONNECTION_STRING = "postgresql://user:password@localhost/f1_db"
+DB_PATH = 'd:/f1-elo/DB/f1_database.db' # For SQLite
 
 
 def clean_null_values(df, null_markers=['\\N', 'NULL', '']):
@@ -31,7 +27,7 @@ def import_data_sqlite():
     cursor = conn.cursor()
     
     try:
-        # Execute schema creation (you can read from create_database.sql)
+        # Execute schema creation
         print("\nCreating tables...")
         create_tables_sqlite(cursor)
         
