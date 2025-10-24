@@ -22,6 +22,7 @@ const teamColorMap = {
 // Initialize app
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
+    loadAvailableYears();
     loadRankings('century'); // Start with Modern Era
     loadLastUpdate();
 });
@@ -29,9 +30,13 @@ document.addEventListener('DOMContentLoaded', () => {
 // Setup event listeners
 function setupEventListeners() {
     const filterButtons = document.querySelectorAll('.filter-btn');
+    const yearSelect = document.getElementById('yearSelect');
     
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
+            // Clear year selection
+            yearSelect.value = '';
+            
             // Update active state
             filterButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
@@ -42,15 +47,58 @@ function setupEventListeners() {
             loadRankings(filter);
         });
     });
+    
+    // Year selector handler
+    yearSelect.addEventListener('change', (e) => {
+        const selectedYear = e.target.value;
+        if (selectedYear) {
+            // Deactivate filter buttons
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Load rankings for specific year
+            loadRankings('year', selectedYear);
+        }
+    });
+}
+
+// Load available years
+async function loadAvailableYears() {
+    try {
+        const response = await fetch('/api/years');
+        const data = await response.json();
+        
+        if (data.success) {
+            const yearSelect = document.getElementById('yearSelect');
+            
+            // Populate dropdown with years (newest first)
+            data.years.sort((a, b) => b - a).forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error('Error loading years:', error);
+    }
 }
 
 // Load rankings from API
-async function loadRankings(filter = 'current') {
+async function loadRankings(filter = 'current', year = null) {
     const driverGrid = document.getElementById('driverGrid');
     driverGrid.innerHTML = '<div class="loading">Loading rankings...</div>';
     
+    // Determine API endpoint
+    let apiUrl = `/api/rankings?filter=${filter}`;
+    if (year) {
+        apiUrl = `/api/rankings?filter=year&year=${year}`;
+    }
+    
+    // Update legend based on filter
+    updateLegend(filter, year);
+    
     try {
-        const response = await fetch(`/api/rankings?filter=${filter}`);
+        const response = await fetch(apiUrl);
         const data = await response.json();
         
         if (data.success) {
@@ -62,6 +110,20 @@ async function loadRankings(filter = 'current') {
     } catch (error) {
         console.error('Error fetching rankings:', error);
         driverGrid.innerHTML = '<div class="loading">Error loading rankings. Please try again.</div>';
+    }
+}
+
+// Update legend based on current filter
+function updateLegend(filter, year = null) {
+    const legendNote = document.querySelector('.legend-note');
+    if (legendNote) {
+        if (year) {
+            legendNote.textContent = `Sorted by: ${year} Season ELO`;
+        } else if (filter === 'all') {
+            legendNote.textContent = 'Sorted by: Global ELO Rating (Raw)';
+        } else {
+            legendNote.textContent = 'Sorted by: Era-Adjusted ELO Rating';
+        }
     }
 }
 

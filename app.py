@@ -23,21 +23,13 @@ def get_driver_rankings(season_filter='all'):
     Get driver rankings with ELO scores
     
     Args:
-        season_filter: 'current' (2025), 'century' (2000-2025), 'all' (all-time)
+        season_filter: 'current' (2024), 'century' (2000-2024), 'all' (all-time)
     """
     try:
         conn = get_db_connection()
-        
-        # Determine year range based on filter (using season_year for your schema)
-        if season_filter == 'current':
-            year_condition = "AND r.season_year = 2024"  # Latest complete season
-        elif season_filter == 'century':
-            year_condition = "AND r.season_year >= 2000"
-        else:
-            year_condition = ""
-        
-        # First, check if Driver_Elo table exists (case-sensitive check)
         cursor = conn.cursor()
+        
+        # Check if Driver_Elo table exists (case-sensitive check)
         cursor.execute("""
             SELECT name FROM sqlite_master 
             WHERE type='table' AND (name='driver_elo' OR name='Driver_Elo')
@@ -52,6 +44,31 @@ def get_driver_rankings(season_filter='all'):
         # Use the actual table name found
         elo_table = table_result[0]
         
+        # Determine which ELO to use and year filter based on era
+        if season_filter == 'current':
+            # Latest season - use era_adjusted_elo, filter by 2024 participation
+            elo_column = "de.era_adjusted_elo"
+            year_filter = """
+                AND EXISTS (
+                    SELECT 1 FROM Result r 
+                    JOIN Race ra ON r.race_id = ra.race_id 
+                    WHERE r.driver_id = d.driver_id AND ra.season_year = 2024
+                )
+            """
+            order_by = "de.era_adjusted_elo DESC"
+            
+        elif season_filter == 'century':
+            # Modern era (2000+) - use era_adjusted_elo, filter by debut year
+            elo_column = "de.era_adjusted_elo"
+            year_filter = "AND de.debut_year >= 2000"
+            order_by = "de.era_adjusted_elo DESC"
+            
+        else:
+            # All time - use raw global_elo for fair historical comparison
+            elo_column = "de.global_elo"
+            year_filter = ""
+            order_by = "de.global_elo DESC"
+        
         # Query to get driver rankings with stats
         query = f"""
         SELECT 
@@ -62,8 +79,11 @@ def get_driver_rankings(season_filter='all'):
             de.qualifying_elo,
             de.race_elo,
             de.global_elo,
+            de.era_adjusted_elo,
+            {elo_column} as display_elo,
             de.qualifying_races,
             de.race_races,
+            de.debut_year,
             (
                 SELECT t2.team_name 
                 FROM Result res2
@@ -97,17 +117,126 @@ def get_driver_rankings(season_filter='all'):
         FROM Driver d
         INNER JOIN {elo_table} de ON d.driver_id = de.driver_id
         WHERE de.global_elo IS NOT NULL
-        ORDER BY de.global_elo DESC
+        {year_filter}
+        ORDER BY {order_by}
         """
         
         df = pd.read_sql_query(query, conn)
         conn.close()
         
-        # Return all drivers (filtering by season temporarily disabled until stats are fixed)
+        # Rename display_elo to global_elo for frontend consistency
+        if 'display_elo' in df.columns:
+            df['global_elo'] = df['display_elo']
+        
         return df.to_dict('records')
         
     except Exception as e:
         print(f"Error fetching rankings: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return []
+
+def get_driver_rankings_by_year(year):
+    """
+    Get driver rankings for a specific year
+    Shows drivers who raced in that year with their team
+    
+    Args:
+        year: Specific year to filter by
+    """
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Check if Driver_Elo table exists
+        cursor.execute("""
+            SELECT name FROM sqlite_master 
+            WHERE type='table' AND (name='driver_elo' OR name='Driver_Elo')
+        """)
+        
+        table_result = cursor.fetchone()
+        if not table_result:
+            print("Warning: Driver_Elo table not found.")
+            conn.close()
+            return []
+        
+        elo_table = table_result[0]
+        
+        # Query to get drivers who raced in specific year
+        # Group by driver_id and get their primary team (most races)
+        query = f"""
+        SELECT 
+            d.driver_id as driverId,
+            d.first_name || ' ' || d.last_name as driver_name,
+            SUBSTR(UPPER(d.last_name), 1, 3) as driver_code,
+            d.nationality,
+            de.qualifying_elo,
+            de.race_elo,
+            de.global_elo,
+            de.era_adjusted_elo,
+            de.qualifying_races,
+            de.race_races,
+            de.debut_year,
+            (
+                SELECT t2.team_name 
+                FROM Result res2
+                JOIN Team t2 ON res2.team_id = t2.team_id
+                JOIN Race r2 ON res2.race_id = r2.race_id
+                WHERE res2.driver_id = d.driver_id AND r2.season_year = ?
+                GROUP BY t2.team_name
+                ORDER BY COUNT(*) DESC
+                LIMIT 1
+            ) as current_team,
+            (
+                SELECT COUNT(DISTINCT r3.race_id)
+                FROM Result res3
+                JOIN Race r3 ON res3.race_id = r3.race_id
+                WHERE res3.driver_id = d.driver_id AND r3.season_year = ?
+            ) as total_races,
+            (
+                SELECT COUNT(*)
+                FROM Result res4
+                JOIN Race r4 ON res4.race_id = r4.race_id
+                WHERE res4.driver_id = d.driver_id 
+                AND res4.position = 1
+                AND r4.season_year = ?
+            ) as wins,
+            (
+                SELECT COUNT(*)
+                FROM Result res5
+                JOIN Race r5 ON res5.race_id = r5.race_id
+                WHERE res5.driver_id = d.driver_id 
+                AND res5.position <= 3
+                AND res5.position > 0
+                AND r5.season_year = ?
+            ) as podiums
+        FROM Driver d
+        INNER JOIN {elo_table} de ON d.driver_id = de.driver_id
+        WHERE EXISTS (
+            SELECT 1 FROM Result r 
+            JOIN Race ra ON r.race_id = ra.race_id 
+            WHERE r.driver_id = d.driver_id AND ra.season_year = ?
+        )
+        AND de.global_elo IS NOT NULL
+        ORDER BY de.global_elo DESC
+        """
+        
+        df = pd.read_sql_query(query, conn, params=(year, year, year, year, year))
+        conn.close()
+        
+        return df.to_dict('records')
+        
+    except Exception as e:
+        print(f"Error fetching rankings for year {year}: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return []
+        return df.to_dict('records')
+        
+    except Exception as e:
+        print(f"Error fetching rankings: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return []
 
 def get_team_colors():
@@ -134,7 +263,20 @@ def index():
 def api_rankings():
     """API endpoint for driver rankings"""
     season_filter = request.args.get('filter', 'all')
+    year = request.args.get('year', None)
     
+    # Handle specific year filter
+    if season_filter == 'year' and year:
+        rankings = get_driver_rankings_by_year(int(year))
+        return jsonify({
+            'success': True,
+            'filter': 'year',
+            'year': int(year),
+            'count': len(rankings),
+            'rankings': rankings
+        })
+    
+    # Handle regular filters
     if season_filter not in ['current', 'century', 'all']:
         season_filter = 'all'
     
@@ -145,6 +287,29 @@ def api_rankings():
         'count': len(rankings),
         'rankings': rankings
     })
+
+@app.route('/api/years')
+def api_years():
+    """API endpoint to get available years"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('SELECT DISTINCT season_year FROM Race ORDER BY season_year DESC')
+        years = [row[0] for row in cursor.fetchall()]
+        
+        conn.close()
+        
+        return jsonify({
+            'success': True,
+            'years': years
+        })
+    except Exception as e:
+        print(f"Error fetching years: {str(e)}")
+        return jsonify({
+            'success': False,
+            'years': []
+        })
 
 @app.route('/api/team-colors')
 def api_team_colors():

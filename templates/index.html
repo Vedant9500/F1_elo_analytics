@@ -46,21 +46,32 @@
                     <span class="filter-subtitle">1950-2024</span>
                 </button>
             </div>
+            
+            <div class="year-selector-container">
+                <label for="yearSelect" class="year-label">Or select specific year:</label>
+                <select id="yearSelect" class="year-select">
+                    <option value="">-- Select Year --</option>
+                </select>
+            </div>
         </section>
 
         <section class="rankings">
             <div class="rankings-header">
                 <h3>Driver Rankings</h3>
                 <div class="stats-legend">
+                    <span class="legend-note">Sorted by:</span>
                     <span class="legend-item">
                         <span class="legend-badge elo-badge">ELO</span> Global ELO Rating
                     </span>
+                    <!-- Future: Add sorting by Q/R ELO -->
+                    <!--
                     <span class="legend-item">
                         <span class="legend-badge qual-badge">Q</span> Qualifying ELO
                     </span>
                     <span class="legend-item">
                         <span class="legend-badge race-badge">R</span> Race ELO
                     </span>
+                    -->
                 </div>
             </div>
             
