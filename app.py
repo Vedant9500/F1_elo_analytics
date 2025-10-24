@@ -138,8 +138,8 @@ def get_driver_rankings(season_filter='all'):
 
 def get_driver_rankings_by_year(year):
     """
-    Get driver rankings for a specific year
-    Shows drivers who raced in that year with their team
+    Get driver rankings for a specific year using historical ELO snapshots
+    Shows drivers who raced in that year with their ELO at the end of that season
     
     Args:
         year: Specific year to filter by
@@ -148,35 +148,28 @@ def get_driver_rankings_by_year(year):
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # Check if Driver_Elo table exists
+        # Check if Driver_Elo_History table exists
         cursor.execute("""
             SELECT name FROM sqlite_master 
-            WHERE type='table' AND (name='driver_elo' OR name='Driver_Elo')
+            WHERE type='table' AND name='Driver_Elo_History'
         """)
         
-        table_result = cursor.fetchone()
-        if not table_result:
-            print("Warning: Driver_Elo table not found.")
+        if not cursor.fetchone():
+            print("Warning: Driver_Elo_History table not found.")
             conn.close()
             return []
         
-        elo_table = table_result[0]
-        
-        # Query to get drivers who raced in specific year
-        # Group by driver_id and get their primary team (most races)
-        query = f"""
+        # Query to get drivers with their ELO at the end of the specified year
+        # Only include drivers who actually raced in that year
+        query = """
         SELECT 
             d.driver_id as driverId,
             d.first_name || ' ' || d.last_name as driver_name,
             SUBSTR(UPPER(d.last_name), 1, 3) as driver_code,
             d.nationality,
-            de.qualifying_elo,
-            de.race_elo,
-            de.global_elo,
-            de.era_adjusted_elo,
-            de.qualifying_races,
-            de.race_races,
-            de.debut_year,
+            deh.qualifying_elo,
+            deh.race_elo,
+            deh.global_elo,
             (
                 SELECT t2.team_name 
                 FROM Result res2
@@ -211,17 +204,17 @@ def get_driver_rankings_by_year(year):
                 AND r5.season_year = ?
             ) as podiums
         FROM Driver d
-        INNER JOIN {elo_table} de ON d.driver_id = de.driver_id
-        WHERE EXISTS (
+        INNER JOIN Driver_Elo_History deh ON d.driver_id = deh.driver_id
+        WHERE deh.season_year = ?
+        AND EXISTS (
             SELECT 1 FROM Result r 
             JOIN Race ra ON r.race_id = ra.race_id 
             WHERE r.driver_id = d.driver_id AND ra.season_year = ?
         )
-        AND de.global_elo IS NOT NULL
-        ORDER BY de.global_elo DESC
+        ORDER BY deh.global_elo DESC
         """
         
-        df = pd.read_sql_query(query, conn, params=(year, year, year, year, year))
+        df = pd.read_sql_query(query, conn, params=(year, year, year, year, year, year))
         conn.close()
         
         return df.to_dict('records')

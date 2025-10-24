@@ -69,6 +69,10 @@ class TeammateBasedF1Elo:
             'ever_elite_race': False
         })
         
+        # Season-by-season ELO snapshots
+        # Structure: {(driver_id, season_year): {'qualifying_elo': float, 'race_elo': float, 'global_elo': float}}
+        self.season_snapshots = {}
+        
         # Mechanical failure status codes (DNFs that should be EXCLUDED)
         self.MECHANICAL_FAILURES = {
             'Engine', 'Gearbox', 'Transmission', 'Clutch', 'Hydraulics',
@@ -317,6 +321,24 @@ class TeammateBasedF1Elo:
         print(f"  Season {season_year} normalized: Quali mean {mean_qualifying:.1f}→1500, "
               f"Race mean {mean_race:.1f}→1500")
     
+    def save_season_snapshot(self, season_year):
+        """
+        Save ELO ratings snapshot at the end of a season.
+        This allows us to retrieve historical ratings for any given year.
+        """
+        for driver_id, ratings in self.driver_ratings.items():
+            # Only save if driver participated that season
+            if ratings['qualifying_races'] > 0 or ratings['race_races'] > 0:
+                qualifying_elo = ratings['qualifying_elo']
+                race_elo = ratings['race_elo']
+                global_elo = self.calculate_global_elo(qualifying_elo, race_elo)
+                
+                self.season_snapshots[(driver_id, season_year)] = {
+                    'qualifying_elo': qualifying_elo,
+                    'race_elo': race_elo,
+                    'global_elo': global_elo
+                }
+    
     def calculate_global_elo(self, qualifying_elo, race_elo):
         """
         Calculate Global Elo as weighted combination.
@@ -403,6 +425,8 @@ class TeammateBasedF1Elo:
             # Season normalization at year end
             if current_season is not None and year != current_season:
                 self.normalize_ratings(current_season)
+                # Save season snapshot after normalization
+                self.save_season_snapshot(current_season)
             current_season = year
             
             # Get all results for this race with team information
@@ -474,6 +498,8 @@ class TeammateBasedF1Elo:
         # Final season normalization
         if current_season is not None:
             self.normalize_ratings(current_season)
+            # Save final season snapshot
+            self.save_season_snapshot(current_season)
         
         print("="*70)
         print(f"CALCULATION COMPLETE")
@@ -481,6 +507,7 @@ class TeammateBasedF1Elo:
         print(f"Total Qualifying Matchups: {total_quali_matchups}")
         print(f"Total Race Matchups: {total_race_matchups}")
         print(f"Drivers Rated: {len(self.driver_ratings)}")
+        print(f"Season Snapshots Saved: {len(self.season_snapshots)}")
         print("="*70)
     
     def save_to_database(self):
@@ -540,6 +567,24 @@ class TeammateBasedF1Elo:
         
         self.conn.commit()
         print(f"✓ Saved {len(elo_records)} driver ratings to database")
+        
+        # Save season snapshots to a separate table
+        print("\nSaving season-by-season ELO snapshots...")
+        snapshot_records = []
+        for (driver_id, season_year), snapshot in self.season_snapshots.items():
+            snapshot_records.append({
+                'driver_id': driver_id,
+                'season_year': season_year,
+                'qualifying_elo': round(snapshot['qualifying_elo'], 2),
+                'race_elo': round(snapshot['race_elo'], 2),
+                'global_elo': round(snapshot['global_elo'], 2)
+            })
+        
+        if snapshot_records:
+            snapshot_df = pd.DataFrame(snapshot_records)
+            snapshot_df.to_sql('Driver_Elo_History', self.conn, if_exists='replace', index=False)
+            self.conn.commit()
+            print(f"✓ Saved {len(snapshot_records)} season snapshots to Driver_Elo_History table")
         
         # Display top 20 by Global Elo (Raw)
         print("\n" + "="*80)
