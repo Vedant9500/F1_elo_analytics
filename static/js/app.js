@@ -1,7 +1,7 @@
 // F1 ELO Rankings - Main JavaScript
 
 // State management
-let currentFilter = 'current';
+let currentFilter = 'century'; // Default to Modern Era which has data
 let allRankings = [];
 let teamColors = {};
 
@@ -22,7 +22,7 @@ const teamColorMap = {
 // Initialize app
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
-    loadRankings('current');
+    loadRankings('century'); // Start with Modern Era
     loadLastUpdate();
 });
 

@@ -30,7 +30,7 @@ def get_driver_rankings(season_filter='all'):
         
         # Determine year range based on filter (using season_year for your schema)
         if season_filter == 'current':
-            year_condition = "AND r.season_year = 2025"
+            year_condition = "AND r.season_year = 2024"  # Latest complete season
         elif season_filter == 'century':
             year_condition = "AND r.season_year >= 2000"
         else:
