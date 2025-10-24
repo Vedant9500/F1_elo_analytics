@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1 Driver ELO Rankings 2025</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <h1>F1 <span class="elo-text">ELO</span> RANKINGS</h1>
+            </div>
+            <nav>
+                <a href="#" class="nav-link">Rankings</a>
+                <a href="#" class="nav-link">Statistics</a>
+                <a href="#" class="nav-link">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h2>F1 DRIVERS 2025</h2>
+                <p>Find the Formula 1 drivers ranked by ELO rating system</p>
+                <div class="last-update" id="lastUpdate">
+                    Last updated: Loading...
+                </div>
+            </div>
+        </section>
+
+        <section class="filters">
+            <div class="filter-container">
+                <button class="filter-btn active" data-filter="current">
+                    <span class="filter-title">Current Season</span>
+                    <span class="filter-subtitle">2025</span>
+                </button>
+                <button class="filter-btn" data-filter="century">
+                    <span class="filter-title">Current Century</span>
+                    <span class="filter-subtitle">2000-2025</span>
+                </button>
+                <button class="filter-btn" data-filter="all">
+                    <span class="filter-title">All Time</span>
+                    <span class="filter-subtitle">1950-2025</span>
+                </button>
+            </div>
+        </section>
+
+        <section class="rankings">
+            <div class="rankings-header">
+                <h3>Driver Rankings</h3>
+                <div class="stats-legend">
+                    <span class="legend-item">
+                        <span class="legend-badge elo-badge">ELO</span> Global ELO Rating
+                    </span>
+                    <span class="legend-item">
+                        <span class="legend-badge qual-badge">Q</span> Qualifying ELO
+                    </span>
+                    <span class="legend-item">
+                        <span class="legend-badge race-badge">R</span> Race ELO
+                    </span>
+                </div>
+            </div>
+            
+            <div id="driverGrid" class="driver-grid">
+                <!-- Driver cards will be inserted here by JavaScript -->
+                <div class="loading">Loading rankings...</div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 F1 ELO Rankings. Data from official Formula 1 sources.</p>
+            <p class="disclaimer">ELO ratings calculated using teammate-based comparison system</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

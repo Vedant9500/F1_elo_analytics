@@ -16,6 +16,13 @@ models/
 *.joblib
 *.h5
 
+# Flask
+instance/
+.webassets-cache
+.env
+venv/
+env/
+
 # OS files
 .DS_Store
 Thumbs.db
