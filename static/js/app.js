@@ -151,19 +151,27 @@ function createDriverCard(driver, rank) {
     
     // Get team color
     const teamColor = getTeamColor(driver.current_team);
+    const teamColorRgb = hexToRgba(teamColor, 0.4);
     card.style.setProperty('--team-color', teamColor);
+    card.style.setProperty('--team-color-rgb', teamColorRgb);
     
     // Format ELO values
     const globalElo = Math.round(driver.global_elo || 1500);
     const qualifyingElo = Math.round(driver.qualifying_elo || 1500);
     const raceElo = Math.round(driver.race_elo || 1500);
     
+    // Get country flag emoji
+    const flagEmoji = getCountryFlag(driver.nationality);
+    
     card.innerHTML = `
         <div class="driver-rank">#${rank}</div>
         <div class="driver-info">
-            <div class="driver-name">${driver.driver_name}</div>
-            <div class="driver-team">${driver.current_team || 'Unknown Team'}</div>
-            <div class="driver-nationality">🏁 ${driver.nationality || 'N/A'}</div>
+            <div class="driver-flag">${flagEmoji}</div>
+            <div class="driver-details">
+                <div class="driver-name">${driver.driver_name}</div>
+                <div class="driver-team">${driver.current_team || 'Unknown Team'}</div>
+                <div class="driver-nationality">${driver.nationality || 'N/A'}</div>
+            </div>
         </div>
         
         <div class="driver-elo-stats">
@@ -198,6 +206,59 @@ function createDriverCard(driver, rank) {
     `;
     
     return card;
+}
+
+// Convert hex color to rgba
+function hexToRgba(hex, alpha = 1) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+// Get country flag emoji
+function getCountryFlag(nationality) {
+    const flagMap = {
+        'British': '🇬🇧',
+        'German': '🇩🇪',
+        'Spanish': '🇪🇸',
+        'Dutch': '🇳🇱',
+        'Australian': '🇦🇺',
+        'Canadian': '🇨🇦',
+        'French': '🇫🇷',
+        'Italian': '🇮🇹',
+        'Finnish': '🇫🇮',
+        'Mexican': '🇲🇽',
+        'Thai': '🇹🇭',
+        'Japanese': '🇯🇵',
+        'Chinese': '🇨🇳',
+        'Danish': '🇩🇰',
+        'Monegasque': '🇲🇨',
+        'Brazilian': '🇧🇷',
+        'Argentine': '🇦🇷',
+        'American': '🇺🇸',
+        'Belgian': '🇧🇪',
+        'Polish': '🇵🇱',
+        'Russian': '🇷🇺',
+        'Venezuelan': '🇻🇪',
+        'Colombian': '🇨🇴',
+        'Austrian': '🇦🇹',
+        'Swedish': '🇸🇪',
+        'Swiss': '🇨🇭',
+        'New Zealander': '🇳🇿',
+        'South African': '🇿🇦',
+        'Indian': '🇮🇳',
+        'Portuguese': '🇵🇹',
+        'Irish': '🇮🇪',
+        'Argentinian': '🇦🇷',
+        'Rhodesian': '🇿🇼',
+        'East German': '🇩🇪',
+        'Chilean': '🇨🇱',
+        'Hungarian': '🇭🇺',
+        'Czech': '🇨🇿'
+    };
+    
+    return flagMap[nationality] || '🏁';
 }
 
 // Get team color

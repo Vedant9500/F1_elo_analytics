@@ -20,7 +20,7 @@ def get_db_connection():
 
 def get_driver_rankings(season_filter='all'):
     """
-    Get driver rankings with ELO scores
+    Get driver rankings with ELO scores - OPTIMIZED VERSION
     
     Args:
         season_filter: 'current' (2024), 'century' (2000-2024), 'all' (all-time)
@@ -69,8 +69,28 @@ def get_driver_rankings(season_filter='all'):
             year_filter = ""
             order_by = "de.global_elo DESC"
         
-        # Query to get driver rankings with stats
+        # OPTIMIZED: Single query with aggregations instead of multiple subqueries
         query = f"""
+        WITH driver_stats AS (
+            SELECT 
+                res.driver_id,
+                COUNT(DISTINCT res.race_id) as total_races,
+                SUM(CASE WHEN res.position = 1 THEN 1 ELSE 0 END) as wins,
+                SUM(CASE WHEN res.position <= 3 AND res.position > 0 THEN 1 ELSE 0 END) as podiums,
+                MAX(r.race_date) as last_race_date,
+                (
+                    SELECT t.team_name 
+                    FROM Result res2
+                    JOIN Team t ON res2.team_id = t.team_id
+                    JOIN Race r2 ON res2.race_id = r2.race_id
+                    WHERE res2.driver_id = res.driver_id
+                    ORDER BY r2.race_date DESC
+                    LIMIT 1
+                ) as current_team
+            FROM Result res
+            JOIN Race r ON res.race_id = r.race_id
+            GROUP BY res.driver_id
+        )
         SELECT 
             d.driver_id as driverId,
             d.first_name || ' ' || d.last_name as driver_name,
@@ -84,38 +104,13 @@ def get_driver_rankings(season_filter='all'):
             de.qualifying_races,
             de.race_races,
             de.debut_year,
-            (
-                SELECT t2.team_name 
-                FROM Result res2
-                JOIN Team t2 ON res2.team_id = t2.team_id
-                JOIN Race r2 ON res2.race_id = r2.race_id
-                WHERE res2.driver_id = d.driver_id
-                ORDER BY r2.race_date DESC
-                LIMIT 1
-            ) as current_team,
-            (
-                SELECT COUNT(DISTINCT r3.race_id)
-                FROM Result res3
-                JOIN Race r3 ON res3.race_id = r3.race_id
-                WHERE res3.driver_id = d.driver_id
-            ) as total_races,
-            (
-                SELECT COUNT(*)
-                FROM Result res4
-                JOIN Race r4 ON res4.race_id = r4.race_id
-                WHERE res4.driver_id = d.driver_id 
-                AND res4.position = 1
-            ) as wins,
-            (
-                SELECT COUNT(*)
-                FROM Result res5
-                JOIN Race r5 ON res5.race_id = r5.race_id
-                WHERE res5.driver_id = d.driver_id 
-                AND res5.position <= 3
-                AND res5.position > 0
-            ) as podiums
+            COALESCE(ds.current_team, 'Unknown') as current_team,
+            COALESCE(ds.total_races, 0) as total_races,
+            COALESCE(ds.wins, 0) as wins,
+            COALESCE(ds.podiums, 0) as podiums
         FROM Driver d
         INNER JOIN {elo_table} de ON d.driver_id = de.driver_id
+        LEFT JOIN driver_stats ds ON d.driver_id = ds.driver_id
         WHERE de.global_elo IS NOT NULL
         {year_filter}
         ORDER BY {order_by}
@@ -159,9 +154,31 @@ def get_driver_rankings_by_year(year):
             conn.close()
             return []
         
-        # Query to get drivers with their ELO at the end of the specified year
-        # Only include drivers who actually raced in that year
+        # OPTIMIZED: Single query with CTE for year-specific stats
         query = """
+        WITH year_stats AS (
+            SELECT 
+                res.driver_id,
+                COUNT(DISTINCT res.race_id) as total_races,
+                SUM(CASE WHEN res.position = 1 THEN 1 ELSE 0 END) as wins,
+                SUM(CASE WHEN res.position <= 3 AND res.position > 0 THEN 1 ELSE 0 END) as podiums
+            FROM Result res
+            JOIN Race r ON res.race_id = r.race_id
+            WHERE r.season_year = ?
+            GROUP BY res.driver_id
+        ),
+        year_teams AS (
+            SELECT 
+                res.driver_id,
+                t.team_name,
+                COUNT(*) as race_count,
+                ROW_NUMBER() OVER (PARTITION BY res.driver_id ORDER BY COUNT(*) DESC) as rn
+            FROM Result res
+            JOIN Race r ON res.race_id = r.race_id
+            JOIN Team t ON res.team_id = t.team_id
+            WHERE r.season_year = ?
+            GROUP BY res.driver_id, t.team_name
+        )
         SELECT 
             d.driver_id as driverId,
             d.first_name || ' ' || d.last_name as driver_name,
@@ -170,64 +187,26 @@ def get_driver_rankings_by_year(year):
             deh.qualifying_elo,
             deh.race_elo,
             deh.global_elo,
-            (
-                SELECT t2.team_name 
-                FROM Result res2
-                JOIN Team t2 ON res2.team_id = t2.team_id
-                JOIN Race r2 ON res2.race_id = r2.race_id
-                WHERE res2.driver_id = d.driver_id AND r2.season_year = ?
-                GROUP BY t2.team_name
-                ORDER BY COUNT(*) DESC
-                LIMIT 1
-            ) as current_team,
-            (
-                SELECT COUNT(DISTINCT r3.race_id)
-                FROM Result res3
-                JOIN Race r3 ON res3.race_id = r3.race_id
-                WHERE res3.driver_id = d.driver_id AND r3.season_year = ?
-            ) as total_races,
-            (
-                SELECT COUNT(*)
-                FROM Result res4
-                JOIN Race r4 ON res4.race_id = r4.race_id
-                WHERE res4.driver_id = d.driver_id 
-                AND res4.position = 1
-                AND r4.season_year = ?
-            ) as wins,
-            (
-                SELECT COUNT(*)
-                FROM Result res5
-                JOIN Race r5 ON res5.race_id = r5.race_id
-                WHERE res5.driver_id = d.driver_id 
-                AND res5.position <= 3
-                AND res5.position > 0
-                AND r5.season_year = ?
-            ) as podiums
+            COALESCE(yt.team_name, 'Unknown') as current_team,
+            COALESCE(ys.total_races, 0) as total_races,
+            COALESCE(ys.wins, 0) as wins,
+            COALESCE(ys.podiums, 0) as podiums
         FROM Driver d
         INNER JOIN Driver_Elo_History deh ON d.driver_id = deh.driver_id
+        LEFT JOIN year_stats ys ON d.driver_id = ys.driver_id
+        LEFT JOIN year_teams yt ON d.driver_id = yt.driver_id AND yt.rn = 1
         WHERE deh.season_year = ?
-        AND EXISTS (
-            SELECT 1 FROM Result r 
-            JOIN Race ra ON r.race_id = ra.race_id 
-            WHERE r.driver_id = d.driver_id AND ra.season_year = ?
-        )
+        AND ys.driver_id IS NOT NULL
         ORDER BY deh.global_elo DESC
         """
         
-        df = pd.read_sql_query(query, conn, params=(year, year, year, year, year, year))
+        df = pd.read_sql_query(query, conn, params=(year, year, year))
         conn.close()
         
         return df.to_dict('records')
         
     except Exception as e:
         print(f"Error fetching rankings for year {year}: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        return []
-        return df.to_dict('records')
-        
-    except Exception as e:
-        print(f"Error fetching rankings: {str(e)}")
         import traceback
         traceback.print_exc()
         return []
