@@ -163,12 +163,20 @@ function createDriverCard(driver, rank) {
     // Get country flag emoji
     const flagEmoji = getCountryFlag(driver.nationality);
     
+    // Split name into first name(s) and last name
+    const nameParts = driver.driver_name.trim().split(' ');
+    const lastName = nameParts[nameParts.length - 1];
+    const firstName = nameParts.slice(0, -1).join(' ');
+    
     card.innerHTML = `
         <div class="driver-rank">#${rank}</div>
         <div class="driver-info">
             <div class="driver-flag">${flagEmoji}</div>
             <div class="driver-details">
-                <div class="driver-name">${driver.driver_name}</div>
+                <div class="driver-name">
+                    <div class="driver-firstname">${firstName}</div>
+                    <div class="driver-lastname">${lastName}</div>
+                </div>
                 <div class="driver-team">${driver.current_team || 'Unknown Team'}</div>
                 <div class="driver-nationality">${driver.nationality || 'N/A'}</div>
             </div>
