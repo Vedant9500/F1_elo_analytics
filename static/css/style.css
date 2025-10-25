@@ -88,11 +88,6 @@ nav {
     color: var(--text-primary);
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.3s;
-}
-
-.nav-link:hover {
-    color: var(--primary-color);
 }
 
 /* Hero Section */
@@ -191,18 +186,6 @@ nav {
     transition: left 0.5s;
 }
 
-.filter-btn:hover::before {
-    left: 100%;
-}
-
-.filter-btn:hover {
-    border-color: var(--primary-color);
-    transform: translateY(-4px);
-    box-shadow: 
-        0 8px 24px rgba(0, 0, 0, 0.4),
-        0 0 30px rgba(225, 6, 0, 0.2);
-}
-
 .filter-btn.active {
     background: linear-gradient(135deg, var(--primary-color) 0%, #B10500 100%);
     border-color: var(--primary-color);
@@ -271,7 +254,6 @@ nav {
 .year-select:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(225, 6, 0, 0.1);
     background-color: #212131;
 }
 
@@ -280,11 +262,6 @@ nav {
     color: #ffffff;
     padding: 0.8rem;
     font-weight: 500;
-}
-
-.year-select option:hover {
-    background-color: #e10600;
-    color: white;
 }
 
 .year-select option:checked {
@@ -385,17 +362,6 @@ nav {
     width: 5px;
     height: 100%;
     background: var(--team-color, var(--primary-color));
-    box-shadow: 0 0 15px var(--team-color, var(--primary-color));
-}
-
-/* Glowing border effect on hover */
-.driver-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    border-color: var(--team-color, var(--primary-color));
-    box-shadow: 
-        0 0 20px rgba(0, 0, 0, 0.5),
-        0 0 40px var(--team-color-rgb, rgba(225, 6, 0, 0.4)),
-        inset 0 0 60px rgba(0, 0, 0, 0.1);
 }
 
 .driver-rank {
@@ -434,12 +400,6 @@ nav {
     overflow: hidden;
     line-height: 0;
     padding-bottom: 6px;
-}
-
-.driver-card:hover .driver-flag {
-    border-color: var(--team-color, var(--primary-color));
-    box-shadow: 0 0 20px var(--team-color-rgb, rgba(225, 6, 0, 0.4));
-    transform: scale(1.1);
 }
 
 .driver-details {
@@ -509,13 +469,6 @@ nav {
     border: 1px solid rgba(255, 255, 255, 0.08);
     transition: all 0.3s;
 }
-
-.elo-stat:hover {
-    background: linear-gradient(135deg, rgba(225, 6, 0, 0.1) 0%, rgba(225, 6, 0, 0.05) 100%);
-    border-color: rgba(225, 6, 0, 0.3);
-    transform: translateY(-2px);
-}
-
 .elo-stat-value {
     font-size: 1.4rem;
     font-weight: 800;
