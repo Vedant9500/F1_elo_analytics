@@ -426,11 +426,14 @@ nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: 3.9rem;
     flex-shrink: 0;
     border: 2px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     transition: all 0.3s;
+    overflow: hidden;
+    line-height: 0;
+    padding-bottom: 6px;
 }
 
 .driver-card:hover .driver-flag {
