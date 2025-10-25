@@ -1,140 +1,225 @@
-# F1 ELO Rankings Web Application
+# F1 ELO Rankings
 
-A web application for displaying Formula 1 driver rankings based on ELO rating system.
+A modern web application for displaying Formula 1 driver rankings based on a teammate-comparison ELO rating system. Features a sleek F1-inspired design with historical data spanning from 1950 to 2024.
 
-## Features
+![F1 ELO Rankings](https://img.shields.io/badge/F1-ELO%20Rankings-E10600?style=for-the-badge&logo=formula1)
 
-- **Dynamic Rankings**: View driver rankings based on ELO ratings
-- **Multiple Time Periods**: 
-  - Current Season (2025)
-  - Current Century (2000-2025)
-  - All Time (1950-2025)
-- **Real-time Updates**: Automatically updates after each race
-- **Team Colors**: Visual representation with team-specific colors
-- **Detailed Stats**: 
-  - Global ELO rating
-  - Qualifying ELO
-  - Race ELO
-  - Wins, Podiums, Total Races
+## ✨ Features
 
-## Project Structure
+### 📊 Comprehensive Rankings
+- **Historical Year Selection**: View rankings from any F1 season (1950-2024)
+- **Era-Based Filtering**: 
+  - Latest Season (2024)
+  - Modern Era (2000-2024)
+  - All Time (1950-2024)
+- **Season-by-Season Snapshots**: See accurate historical ELO ratings at the end of each season
+
+### 🎨 Professional Design
+- **Official F1 Typography**: Uses Formula1-Display fonts (Regular, Bold, Wide)
+- **Team-Colored Accents**: Dynamic borders reflecting each driver's team colors
+- **Circular Flag Icons**: Country flags for driver nationalities
+- **Responsive Grid Layout**: 4-column card layout optimized for modern displays
+- **Clean, Modern UI**: Inspired by official F1 digital design language
+
+### 📈 Detailed Statistics
+- **Three ELO Ratings**:
+  - Global ELO (combined rating)
+  - Qualifying ELO (grid performance)
+  - Race ELO (race-day performance)
+- **Career Statistics**: Wins, podiums, and total races
+- **Real-time Filtering**: Instant updates when switching years or eras
+
+## 🏗️ Project Structure
 
 ```
 f1-elo/
-├── app.py                      # Flask backend application
+├── app.py                          # Flask backend with optimized queries
+├── config.py                       # Database configuration
+├── requirements.txt                # Python dependencies
+├── import_data.py                  # Data import script
+├── update_rankings.py              # ELO ranking updates
 ├── templates/
-│   └── index.html             # Main HTML template
+│   └── index.html                 # Single-page application template
 ├── static/
 │   ├── css/
-│   │   └── style.css         # Stylesheet
+│   │   └── style.css             # F1-inspired styling with gradients
 │   └── js/
-│       └── app.js            # Frontend JavaScript
+│       └── app.js                # Frontend logic with flag mapping
 ├── elo_calculation/
-│   ├── calculate_driver_elo.py
-│   └── calculate_team_elo.py
+│   ├── calculate_driver_elo.py   # Driver ELO with season snapshots
+│   └── calculate_team_elo.py     # Team ELO calculations
+├── scripts/
+│   ├── start_app.bat             # Windows startup script
+│   └── start_app.sh              # Linux/Mac startup script
 ├── DB/
-│   └── f1_database.db        # SQLite database
+│   └── f1_database.db            # SQLite database (39,493 historical snapshots)
+├── archive/                       # Historical F1 data (1950-2024)
+│   ├── circuits.csv
+│   ├── drivers.csv
+│   ├── races.csv
+│   ├── results.csv
+│   └── ... (other historical data)
 ├── data/
-│   └── 2025_race_results.csv
-└── requirements.txt
+│   └── 2025_race_results.csv     # Latest season data
+└── Sql/
+    ├── create_database.sql        # Database schema
+    └── import_data.sql            # Data import scripts
 ```
 
-## Setup and Installation
+## 🚀 Quick Start
 
 ### Prerequisites
-- Python 3.8+
-- SQLite database with F1 data and ELO calculations
+- Python 3.8 or higher
+- SQLite3
 
-### Installation Steps
+### Installation
 
-1. **Install dependencies**:
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/Vedant9500/F1_elo_analytics.git
+   cd F1_elo_analytics
+   ```
+
+2. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
 
-2. **Ensure database is set up**:
-   - Make sure `DB/f1_database.db` exists
-   - Run ELO calculations if not already done:
-     ```bash
-     python elo_calculation/calculate_driver_elo.py
-     ```
+3. **Set up the database** (if not already populated):
+   ```bash
+   python import_data.py
+   python elo_calculation/calculate_driver_elo.py
+   ```
 
-3. **Run the web application**:
+4. **Run the application**:
    ```bash
    python app.py
    ```
+   Or use the convenience scripts:
+   - Windows: `scripts\start_app.bat`
+   - Linux/Mac: `./scripts/start_app.sh`
 
-4. **Open browser**:
-   - Navigate to `http://localhost:5000`
+5. **Open your browser**:
+   ```
+   http://localhost:5000
+   ```
 
-## Usage
+## 📖 How It Works
 
-### Viewing Rankings
-- Click on filter buttons to switch between:
-  - **Current Season**: Shows only 2025 drivers
-  - **Current Century**: Shows drivers from 2000 onwards
-  - **All Time**: Shows all drivers from F1 history
+### ELO Rating System
+This system ranks drivers based on **head-to-head performance against teammates**, not race results. This isolates driver skill from car performance.
 
-### Understanding ELO Ratings
-- **Global ELO**: Combined rating (30% Qualifying, 70% Race)
-- **Qualifying ELO**: Based on qualifying performance vs teammate
-- **Race ELO**: Based on race performance vs teammate
+- **Qualifying ELO**: Calculated from qualifying session head-to-heads
+- **Race ELO**: Calculated from race finish position comparisons
+- **Global ELO**: Weighted combination (30% Qualifying + 70% Race)
 
-### API Endpoints
+**Key Insight**: A driver can have a high ELO despite few wins if they consistently outperform their teammate. Example: Fernando Alonso in 2014 (0 wins, but dominated Kimi Räikkönen 16-3 in qualifying).
 
-#### Get Rankings
-```
+### Historical Data
+- **39,493 season snapshots** stored in `Driver_Elo_History` table
+- ELO ratings captured at the end of each season after normalization
+- Accurate historical rankings for any year from 1950-2024
+
+## 🔧 API Endpoints
+
+### Get Driver Rankings
+```http
 GET /api/rankings?filter=current|century|all
 ```
-Returns driver rankings filtered by time period.
+Returns all-time rankings filtered by era.
 
-#### Get Team Colors
+### Get Year-Specific Rankings
+```http
+GET /api/rankings?year=2015
 ```
+Returns historical rankings from end of specified season.
+
+### Get Available Years
+```http
+GET /api/years
+```
+Returns list of all seasons with ELO data (1950-2024).
+
+### Get Team Colors
+```http
 GET /api/team-colors
 ```
-Returns team color schemes.
+Returns team color schemes for visual styling.
 
-#### Get Last Update
-```
+### Get Last Update
+```http
 GET /api/last-update
 ```
 Returns timestamp of last database update.
 
-## Future Enhancements
+## 🎨 Design Features
 
-- [ ] Add driver detail pages with historical performance
-- [ ] Add race-by-race ELO progression graphs
-- [ ] Add head-to-head comparison tool
-- [ ] Add team rankings page
-- [ ] Implement custom theme/color scheme selector
-- [ ] Add search and filter functionality
-- [ ] Add mobile-responsive improvements
-- [ ] Add data export functionality
-- [ ] Add historical ELO charts
-- [ ] Add season-by-season breakdown
+- **F1 Official Fonts**: Formula1-Display-Regular, Bold, and Wide
+- **Color Palette**:
+  - Primary: F1 Red (#E10600)
+  - Background: Deep gradient (#0A0A0F → #12121A)
+  - Text: White (#FFFFFF) with gray hierarchy (#C0C0C0, #909090)
+- **Pill-Shaped Buttons**: 50px border-radius with glowing effects
+- **4-Column Grid**: Optimized card size for modern displays
+- **Team Borders**: Dynamic coloring based on current team
 
-## Data Updates
+## 📊 Database Schema
 
-To update with new race data:
+### Key Tables
+- **Drivers**: Driver information and metadata
+- **Driver_Elo_History**: Season-by-season ELO snapshots (39,493 records)
+- **Results**: Race results from 1950-2024
+- **Qualifying**: Qualifying session data
+- **Constructors**: Team information
 
-1. Add new race results to `data/2025_race_results.csv`
-2. Run the ELO calculation:
+### Performance Optimizations
+- CTE-based queries for aggregations
+- Window functions for ranking
+- Single-pass statistics calculation
+- Indexed lookups on driver_id and season_year
+
+## 🔄 Updating Data
+
+To add new race results:
+
+1. **Add race data** to `data/2025_race_results.csv`
+2. **Import to database**:
+   ```bash
+   python import_data.py
+   ```
+3. **Recalculate ELO ratings**:
    ```bash
    python elo_calculation/calculate_driver_elo.py
    ```
-3. Refresh the web page - rankings will update automatically
+4. **Refresh browser** - new rankings appear automatically
 
-## Technology Stack
+## 🛠️ Technology Stack
 
-- **Backend**: Flask (Python)
-- **Frontend**: HTML5, CSS3, Vanilla JavaScript
-- **Database**: SQLite
-- **Data Processing**: Pandas, NumPy
+| Component | Technology |
+|-----------|-----------|
+| Backend | Flask (Python 3.8+) |
+| Frontend | HTML5, CSS3, Vanilla JavaScript |
+| Database | SQLite3 |
+| Data Processing | Pandas, NumPy |
+| Fonts | Formula1-Display (Regular, Bold, Wide) |
+| Design | F1 Official Color Palette |
 
-## License
+## 📝 License
 
-This project uses publicly available F1 data for educational purposes.
+This project uses publicly available Formula 1 data for educational and analytical purposes.
 
-## Credits
+## 🙏 Credits
 
-Based on the teammate-based ELO rating system for Formula 1 drivers.
+- **ELO System**: Teammate-based comparison methodology
+- **Data Source**: Historical F1 data (1950-2024)
+- **Design Inspiration**: Official Formula 1 digital platforms
+- **Fonts**: Formula1-Display font family
+
+## 👤 Author
+
+**Vedant Patel**
+- GitHub: [@Vedant9500](https://github.com/Vedant9500)
+
+---
+
+⭐ Star this repo if you find it useful! 🏎️💨
