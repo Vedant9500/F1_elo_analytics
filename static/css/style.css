@@ -95,15 +95,16 @@ header {
     background: linear-gradient(180deg, rgba(18, 18, 26, 0.95) 0%, rgba(18, 18, 26, 0.8) 100%);
     backdrop-filter: blur(10px);
     border-bottom: 2px solid var(--primary-color);
-    padding: 1rem 2rem;
+    padding: 1rem 0;
     position: sticky;
     top: 0;
     z-index: 1000;
 }
 
 .header-content {
-    max-width: 1400px;
+    max-width: 90%;
     margin: 0 auto;
+    padding: 0 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -157,7 +158,7 @@ nav {
 }
 
 .filter-container {
-    max-width: 1400px;
+    max-width: 90%;
     margin: 0 auto;
     display: flex;
     gap: 1.25rem;
@@ -271,9 +272,9 @@ nav {
 
 /* Rankings Section */
 .rankings {
-    max-width: 1400px;
+    max-width: 90%;
     margin: 0 auto;
-    padding: 3rem 2rem;
+    padding: 3rem 1.5rem;
 }
 
 .rankings-header {
