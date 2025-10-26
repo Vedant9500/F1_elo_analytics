@@ -347,23 +347,39 @@ def api_team_rankings():
         cursor = conn.cursor()
         
         # Query using the new Team_Elo_Glicko2 table (driver-adjusted Glicko-2)
-        # For lineages, get the MOST RECENT team name (highest team_id in constructor_ids)
+        # For lineages, get the MOST RECENT team name based on latest race activity
         query = """
             WITH LatestTeamInLineage AS (
                 SELECT 
                     teg.lineage_id,
+                    teg.constructor_ids,
                     teg.qualifying_rating,
                     teg.race_rating,
                     teg.global_rating,
                     teg.conservative_rating,
                     teg.total_races,
                     teg.avg_rd,
-                    -- Parse constructor_ids and find the maximum (most recent team)
-                    MAX(CAST(value AS INTEGER)) as latest_constructor_id
-                FROM Team_Elo_Glicko2 teg,
-                     json_each('["' || replace(teg.constructor_ids, ',', '","') || '"]')
-                GROUP BY teg.lineage_id, teg.qualifying_rating, teg.race_rating, 
-                         teg.global_rating, teg.conservative_rating, teg.total_races, teg.avg_rd
+                    -- Find the constructor with the most recent race activity
+                    (SELECT CAST(constructor.value AS INTEGER)
+                     FROM json_each('["' || replace(teg.constructor_ids, ',', '","') || '"]') as constructor
+                     LEFT JOIN Result res ON res.team_id = CAST(constructor.value AS INTEGER)
+                     LEFT JOIN Race r ON res.race_id = r.race_id
+                     GROUP BY constructor.value
+                     ORDER BY MAX(r.season_year) DESC, CAST(constructor.value AS INTEGER) DESC
+                     LIMIT 1) as latest_constructor_id
+                FROM Team_Elo_Glicko2 teg
+            ),
+            LineageActivity AS (
+                -- Get activity years across ALL constructors in each lineage
+                SELECT 
+                    lt.lineage_id,
+                    MIN(r.season_year) as first_year,
+                    MAX(r.season_year) as last_year
+                FROM LatestTeamInLineage lt,
+                     json_each('["' || replace(lt.constructor_ids, ',', '","') || '"]') as constructor
+                LEFT JOIN Result res ON res.team_id = CAST(constructor.value AS INTEGER)
+                LEFT JOIN Race r ON res.race_id = r.race_id
+                GROUP BY lt.lineage_id
             )
             SELECT 
                 lt.lineage_id as team_id,
@@ -382,23 +398,18 @@ def api_team_rankings():
                 END as reliability_score,
                 COALESCE(t.total_wins, 0) as total_wins,
                 COALESCE(t.total_points, 0) as total_points,
-                COALESCE(MIN(r.season_year), 1950) as first_year,
-                COALESCE(MAX(r.season_year), 1950) as last_year
+                COALESCE(la.first_year, 1950) as first_year,
+                COALESCE(la.last_year, 1950) as last_year
             FROM LatestTeamInLineage lt
             INNER JOIN Team t ON t.team_id = lt.latest_constructor_id
-            LEFT JOIN Result res ON t.team_id = res.team_id
-            LEFT JOIN Race r ON res.race_id = r.race_id
-            GROUP BY lt.lineage_id, t.team_name, t.base_country,
-                     lt.qualifying_rating, lt.race_rating, lt.global_rating,
-                     lt.conservative_rating, lt.total_races, lt.avg_rd,
-                     t.total_wins, t.total_points
+            LEFT JOIN LineageActivity la ON la.lineage_id = lt.lineage_id
         """
         
         # Add filtering based on season
         if season_filter == 'current':
-            query += " HAVING MAX(r.season_year) >= 2024"
+            query += " WHERE la.last_year >= 2024"
         elif season_filter == 'century':
-            query += " HAVING MAX(r.season_year) >= 2000"
+            query += " WHERE la.last_year >= 2000"
         
         # Sort by conservative rating (statistically sound for cross-era comparison)
         query += " ORDER BY lt.conservative_rating DESC"

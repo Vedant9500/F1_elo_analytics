@@ -98,7 +98,7 @@ function createTeamCard(team, rank) {
     const teamName = team.team_name.toUpperCase();
     
     // Calculate years active
-    const yearsActive = `${team.first_race_year}-${team.last_race_year === team.first_race_year ? '' : team.last_race_year}`;
+    const yearsActive = `${team.first_year}-${team.last_year === team.first_year ? '' : team.last_year}`;
     
     card.innerHTML = `
         <div class="driver-rank">#${rank}</div>
