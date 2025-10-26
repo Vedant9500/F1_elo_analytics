@@ -346,34 +346,62 @@ def api_team_rankings():
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # Base query with all team stats
+        # Query using the new Team_Elo_Glicko2 table (driver-adjusted Glicko-2)
+        # For lineages, get the MOST RECENT team name (highest team_id in constructor_ids)
         query = """
+            WITH LatestTeamInLineage AS (
+                SELECT 
+                    teg.lineage_id,
+                    teg.qualifying_rating,
+                    teg.race_rating,
+                    teg.global_rating,
+                    teg.conservative_rating,
+                    teg.total_races,
+                    teg.avg_rd,
+                    -- Parse constructor_ids and find the maximum (most recent team)
+                    MAX(CAST(value AS INTEGER)) as latest_constructor_id
+                FROM Team_Elo_Glicko2 teg,
+                     json_each('["' || replace(teg.constructor_ids, ',', '","') || '"]')
+                GROUP BY teg.lineage_id, teg.qualifying_rating, teg.race_rating, 
+                         teg.global_rating, teg.conservative_rating, teg.total_races, teg.avg_rd
+            )
             SELECT 
-                t.team_id,
+                lt.lineage_id as team_id,
                 t.team_name,
-                t.base_country,
-                te.qualifying_elo,
-                te.race_elo,
-                te.global_elo,
-                te.era_adjusted_elo,
-                te.total_races,
-                te.reliability_score,
-                te.first_race_year,
-                te.last_race_year,
-                t.total_wins,
-                t.total_points
-            FROM Team t
-            INNER JOIN Team_Elo te ON t.team_id = te.team_id
+                COALESCE(t.base_country, 'Unknown') as base_country,
+                lt.qualifying_rating as qualifying_elo,
+                lt.race_rating as race_elo,
+                lt.global_rating as global_elo,
+                lt.conservative_rating as era_adjusted_elo,
+                lt.total_races,
+                CASE 
+                    WHEN lt.avg_rd < 50 THEN 100.0
+                    WHEN lt.avg_rd < 100 THEN 90.0
+                    WHEN lt.avg_rd < 150 THEN 75.0
+                    ELSE 50.0
+                END as reliability_score,
+                COALESCE(t.total_wins, 0) as total_wins,
+                COALESCE(t.total_points, 0) as total_points,
+                COALESCE(MIN(r.season_year), 1950) as first_year,
+                COALESCE(MAX(r.season_year), 1950) as last_year
+            FROM LatestTeamInLineage lt
+            INNER JOIN Team t ON t.team_id = lt.latest_constructor_id
+            LEFT JOIN Result res ON t.team_id = res.team_id
+            LEFT JOIN Race r ON res.race_id = r.race_id
+            GROUP BY lt.lineage_id, t.team_name, t.base_country,
+                     lt.qualifying_rating, lt.race_rating, lt.global_rating,
+                     lt.conservative_rating, lt.total_races, lt.avg_rd,
+                     t.total_wins, t.total_points
         """
         
-        # Add filters based on era
+        # Add filtering based on season
         if season_filter == 'current':
-            query += " WHERE te.last_race_year = 2024"
+            query += " HAVING MAX(r.season_year) >= 2024"
         elif season_filter == 'century':
-            query += " WHERE te.first_race_year >= 2000 OR te.last_race_year >= 2000"
+            query += " HAVING MAX(r.season_year) >= 2000"
         
-        # Sort by era-adjusted ELO
-        query += " ORDER BY te.era_adjusted_elo DESC"
+        # Sort by conservative rating (statistically sound for cross-era comparison)
+        query += " ORDER BY lt.conservative_rating DESC"
         
         cursor.execute(query)
         teams = [dict(row) for row in cursor.fetchall()]
