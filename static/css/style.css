@@ -31,6 +31,16 @@
     box-sizing: border-box;
 }
 
+html {
+    overflow-y: scroll;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+html::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
 :root {
     /* Background - Deep gradient for depth */
     --bg-gradient-start: #0A0A0F;
@@ -66,29 +76,18 @@
 
 body {
     font-family: 'Formula1-Display-Regular', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: 
-        radial-gradient(ellipse at 20% 20%, rgba(225, 6, 0, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(255, 123, 0, 0.05) 0%, transparent 50%),
-        linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
     background-attachment: fixed;
     color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
-    position: relative;
+    overflow-y: scroll;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
 }
 
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-        radial-gradient(circle at 50% 0%, rgba(225, 6, 0, 0.1) 0%, transparent 40%),
-        radial-gradient(circle at 0% 100%, rgba(0, 161, 156, 0.05) 0%, transparent 40%);
-    pointer-events: none;
-    z-index: -1;
+body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
 }
 
 /* Header */
@@ -96,7 +95,6 @@ header {
     background: linear-gradient(180deg, rgba(18, 18, 26, 0.95) 0%, rgba(18, 18, 26, 0.8) 100%);
     backdrop-filter: blur(10px);
     border-bottom: 2px solid var(--primary-color);
-    box-shadow: 0 4px 20px rgba(225, 6, 0, 0.3);
     padding: 1rem 2rem;
     position: sticky;
     top: 0;
@@ -189,10 +187,6 @@ nav {
 .filter-btn.active {
     background: linear-gradient(135deg, var(--primary-color) 0%, #D10600 100%);
     border-color: var(--primary-color);
-    box-shadow: 
-        0 0 30px rgba(225, 6, 0, 0.5),
-        0 0 60px rgba(225, 6, 0, 0.25),
-        0 6px 16px rgba(0, 0, 0, 0.4);
     transform: scale(1.03);
 }
 
@@ -292,9 +286,9 @@ nav {
 }
 
 .rankings-header h3 {
-    font-family: 'Formula1-Display-Wide', sans-serif;
+    font-family: 'Formula1-Display-Regular', sans-serif;
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 900;
     letter-spacing: 2px;
     text-transform: uppercase;
 }
@@ -419,7 +413,7 @@ nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3.2rem;
+    font-size: 3.25rem;
     flex-shrink: 0;
     border: 2px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
