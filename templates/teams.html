@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>F1 Driver ELO Rankings 2025</title>
+    <title>F1 Team ELO Rankings 2025</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -14,8 +14,8 @@
                 <div class="last-update" id="lastUpdate">Last updated: Loading...</div>
             </div>
             <nav>
-                <a href="/" class="nav-link active">Driver Rankings</a>
-                <a href="/teams" class="nav-link">Team Rankings</a>
+                <a href="/" class="nav-link">Driver Rankings</a>
+                <a href="/teams" class="nav-link active">Team Rankings</a>
                 <a href="#" class="nav-link">About</a>
             </nav>
         </div>
@@ -37,30 +37,23 @@
                     <span class="filter-subtitle">1950-2024</span>
                 </button>
             </div>
-            
-            <div class="year-selector-container">
-                <label for="yearSelect" class="year-label">Or select specific year:</label>
-                <select id="yearSelect" class="year-select">
-                    <option value="">-- Select Year --</option>
-                </select>
-            </div>
         </section>
 
         <section class="rankings">
             <div class="rankings-header">
-                <h3>Driver Rankings</h3>
+                <h3>Team Rankings</h3>
                 <div class="stats-legend">
                     <span class="legend-note">Sorted by: Era-Adjusted ELO Rating</span>
                 </div>
             </div>
             
-            <div id="driverGrid" class="driver-grid">
-                <!-- Driver cards will be inserted here by JavaScript -->
+            <div id="teamGrid" class="driver-grid">
+                <!-- Team cards will be inserted here by JavaScript -->
                 <div class="loading">Loading rankings...</div>
             </div>
         </section>
     </main>
 
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/teams.js') }}"></script>
 </body>
 </html>

@@ -330,5 +330,61 @@ def api_last_update():
             'error': 'Could not fetch last race date'
         })
 
+# ===== TEAM RANKINGS ENDPOINTS =====
+
+@app.route('/teams')
+def teams_page():
+    """Render team rankings page"""
+    return render_template('teams.html')
+
+@app.route('/api/team-rankings')
+def api_team_rankings():
+    """Get team rankings with ELO scores"""
+    try:
+        season_filter = request.args.get('filter', 'all')
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Base query with all team stats
+        query = """
+            SELECT 
+                t.team_id,
+                t.team_name,
+                t.base_country,
+                te.qualifying_elo,
+                te.race_elo,
+                te.global_elo,
+                te.era_adjusted_elo,
+                te.total_races,
+                te.reliability_score,
+                te.first_race_year,
+                te.last_race_year,
+                t.total_wins,
+                t.total_points
+            FROM Team t
+            INNER JOIN Team_Elo te ON t.team_id = te.team_id
+        """
+        
+        # Add filters based on era
+        if season_filter == 'current':
+            query += " WHERE te.last_race_year = 2024"
+        elif season_filter == 'century':
+            query += " WHERE te.first_race_year >= 2000 OR te.last_race_year >= 2000"
+        
+        # Sort by era-adjusted ELO
+        query += " ORDER BY te.era_adjusted_elo DESC"
+        
+        cursor.execute(query)
+        teams = [dict(row) for row in cursor.fetchall()]
+        
+        conn.close()
+        
+        return jsonify(teams)
+    
+    except Exception as e:
+        print(f"Error in api_team_rankings: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
